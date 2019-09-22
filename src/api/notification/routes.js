@@ -1,7 +1,6 @@
 import express from "express";
-import { checkAuth, isValidAdmin } from "../../middleware/authorization";
+import { checkAuth, isValidAdmin, isValidUser } from "../../middleware/authorization";
 import { fetchRecord, createRecord, updateRecord, deleteRecord } from "./controller";
-import { isValidUser } from "../../../../../calorie-api-backup/src/middleware/authorization";
 
 const router = express.Router();
 

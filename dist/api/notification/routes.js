@@ -12,8 +12,6 @@ var _authorization = require("../../middleware/authorization");
 
 var _controller = require("./controller");
 
-var _authorization2 = require("../../../../../calorie-api-backup/src/middleware/authorization");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -34,7 +32,7 @@ var router = _express2.default.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/notifications", [_authorization.checkAuth, _authorization2.isValidUser], _controller.fetchRecord);
+router.get("/notifications", [_authorization.checkAuth, _authorization.isValidUser], _controller.fetchRecord);
 
 /**
  * @api {post} /api/v1/notifications Create a Notification record
@@ -65,7 +63,7 @@ router.post("/notifications", [_authorization.checkAuth, _authorization.isValidA
  * @apiError 404 Notification not found.
  * @apiError 401 master access only.
  */
-router.put("/notifications/:recordId", [_authorization.checkAuth, _authorization2.isValidUser], _controller.updateRecord);
+router.put("/notifications/:recordId", [_authorization.checkAuth, _authorization.isValidUser], _controller.updateRecord);
 
 /**
  * @api {delete} /api/v1/notifications/{recordId} Delete a Notification record

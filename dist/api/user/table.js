@@ -35,7 +35,7 @@ var userArray = [{
     country_iso2: "ng",
     email: "admin@rafs.sch.ng",
     password: "royal",
-    api_key: (0, _helpers.genCode)(16),
+    api_key: "ACd99e2c5d2c34ab65269a11ae97da2ead", // genCode(16),
     otp: "1234002",
     otp_count: 1,
     credit: 5,

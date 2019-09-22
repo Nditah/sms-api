@@ -12,8 +12,6 @@ var _authorization = require("../../middleware/authorization");
 
 var _controller = require("./controller");
 
-var _authorization2 = require("../../../../../calorie-api-backup/src/middleware/authorization");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -69,7 +67,7 @@ router.post("/tickets", [_authorization.checkAuth, _authorization.isValidUser], 
  * @apiError 404 Ticket not found.
  * @apiError 401 master access only.
  */
-router.put("/tickets/:recordId", [_authorization.checkAuth, _authorization2.isValidAdmin], _controller.updateRecord);
+router.put("/tickets/:recordId", [_authorization.checkAuth, _authorization.isValidAdmin], _controller.updateRecord);
 
 /**
  * @api {delete} /api/v1/tickets/{recordId} Delete a Ticket record
@@ -81,7 +79,7 @@ router.put("/tickets/:recordId", [_authorization.checkAuth, _authorization2.isVa
  * @apiError 404 Ticket not found.
  * @apiError 401 master access only.
  */
-router.delete("/tickets/:recordId", [_authorization.checkAuth, _authorization2.isValidAdmin], _controller.deleteRecord);
+router.delete("/tickets/:recordId", [_authorization.checkAuth, _authorization.isValidAdmin], _controller.deleteRecord);
 
 exports.default = router;
 //# sourceMappingURL=routes.js.map

@@ -12,8 +12,6 @@ var _authorization = require("../../middleware/authorization");
 
 var _controller = require("./controller");
 
-var _authorization2 = require("../../../../../calorie-api-backup/src/middleware/authorization");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -80,7 +78,7 @@ router.post("/transactions", [_authorization.checkAuth, _authorization.isValidUs
  * @apiError 404 Transaction not found.
  * @apiError 401 master access only.
  */
-router.put("/transactions/:recordId", [_authorization.checkAuth, _authorization2.isValidAdmin], _controller.updateRecord);
+router.put("/transactions/:recordId", [_authorization.checkAuth, _authorization.isValidAdmin], _controller.updateRecord);
 
 /**
  * @api {delete} /api/v1/transactions/{recordId} Delete transactions
@@ -92,7 +90,7 @@ router.put("/transactions/:recordId", [_authorization.checkAuth, _authorization2
  * @apiError 404 Transaction not found.
  * @apiError 401 master access only.
  */
-router.delete("/transactions/:recordId", [_authorization.checkAuth, _authorization2.isValidAdmin], _controller.deleteRecord);
+router.delete("/transactions/:recordId", [_authorization.checkAuth, _authorization.isValidAdmin], _controller.deleteRecord);
 
 exports.default = router;
 //# sourceMappingURL=routes.js.map

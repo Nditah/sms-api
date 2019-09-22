@@ -39,7 +39,7 @@ router.get("/tickets", [_authorization.checkAuth, _authorization.isValidUser], _
  * @apiName CreateTicket
  * @apiGroup Ticket
  * @apiHeader {String} Authorization Bearer token
- * @apiParam {ObjectId} customer Ticket customer
+ * @apiParam {ObjectId} user Ticket user
  * @apiParam {String} subject Ticket subject
  * @apiParam {String} complaint Ticket complaint
  * @apiParam {String} priority Ticket priority "LOW|NORMAL|HIGH"
@@ -57,7 +57,7 @@ router.post("/tickets", [_authorization.checkAuth, _authorization.isValidUser], 
  * @apiGroup Ticket
  * @apiHeader {String} Authorization Bearer token
  * @apiParam {String} recordId required record ObjectId
- * @apiParam {ObjectId} customer Ticket customer
+ * @apiParam {ObjectId} user Ticket user
  * @apiParam {String} subject Ticket subject
  * @apiParam {String} complaint Ticket complaint
  * @apiParam {String} priority Ticket priority "LOW|NORMAL|HIGH"

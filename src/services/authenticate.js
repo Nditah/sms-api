@@ -15,7 +15,13 @@ export function userAuthenticate(loginPayload) {
             }
             // Delete private attributes
             user.password = null;
-            const payload = { id: user.id, type: user.type, email, phone };
+            const payload = {
+                id: user.id,
+                type: user.type,
+                email,
+                phone,
+                credit: user.credit,
+            };
             const token = jwt.sign(payload, JWT.jwtSecret);
             return { token, user };
         }).catch((err) => {

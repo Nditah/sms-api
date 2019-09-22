@@ -41,7 +41,7 @@ router.get("/notifications", [_authorization.checkAuth, _authorization.isValidUs
  * @apiHeader {String} Authorization Bearer token
  * @apiParam {ObjectId} user Notification user ObjectId
  * @apiParam {String} message Notification message
- * @apiParam {String} notification_status Notification record status "PENDING|CLOSED"
+ * @apiParam {String} status Notification record status "PENDING|CLOSED"
  * @apiSuccess {Object} Notification Notification's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Notification not found.
@@ -57,7 +57,7 @@ router.post("/notifications", [_authorization.checkAuth, _authorization.isValidA
  * @apiParam {String} recordId required record ObjectId
  * @apiParam {ObjectId} user Notification user ObjectId
  * @apiParam {String} message Notification message
- * @apiParam {String} notification_status Notification record status "PENDING|CLOSED"
+ * @apiParam {String} status Notification record status "PENDING|CLOSED"
  * @apiSuccess {Object} Notification Notification's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Notification not found.

@@ -26,7 +26,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @property {ObjectId} id Notification primaryKey
  * @property {ObjectId} user Notification user ObjectId
  * @property {String} message Notification message
- * @property {String} notification_status Notification record status "PENDING|CLOSED"
+ * @property {String} status Notification record status "PENDING|CLOSED"
  * @description Notification model holds record of all Notification
  */
 var Schema = _mongoose2.default.Schema;
@@ -36,21 +36,21 @@ var ObjectId = Schema.Types.ObjectId;
 var schemaCreate = exports.schemaCreate = {
     user: _joi2.default.string().optional(),
     message: _joi2.default.string().optional(),
-    notification_status: _joi2.default.string().valid("PENDING", "CLOSED").optional(),
+    status: _joi2.default.string().valid("PENDING", "CLOSED").optional(),
     created_by: _joi2.default.string().required()
 };
 
 var schemaUpdate = exports.schemaUpdate = {
     user: _joi2.default.string().optional(),
     message: _joi2.default.string().optional(),
-    notification_status: _joi2.default.string().valid("PENDING", "CLOSED").optional(),
+    status: _joi2.default.string().valid("PENDING", "CLOSED").optional(),
     updated_by: _joi2.default.string().required()
 };
 
 var schema = exports.schema = {
     user: { type: ObjectId, ref: "User" },
     message: { type: String },
-    notification_status: { type: String, enum: ["PENDING", "CLOSED"], default: "PENDING" },
+    status: { type: String, enum: ["PENDING", "CLOSED"], default: "PENDING" },
     created_by: { type: ObjectId, ref: "User", required: true },
     updated_by: { type: ObjectId, ref: "User" }
 };

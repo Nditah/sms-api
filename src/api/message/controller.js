@@ -13,19 +13,24 @@ log4js.configure({
     categories: { default: { appenders: ["file"], level: "debug" } },
 });
 
+export async function getMessage(query) {
+    const { filter, skip, limit, sort, projection } = aqp(query);
+    const result = await Message.find(filter)
+        .populate("user", "id phone email credit")
+        .populate("created_by", "id phone email credit")
+        .populate("updated_by", "id phone email credit")
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .select(projection)
+        .exec();
+    return result;
+}
+
 export async function fetchRecord(req, res) {
     const { query } = req;
-    const { filter, skip, limit, sort, projection } = aqp(query);
     try {
-        const result = await Message.find(filter)
-            .populate("user", "id phone email username fullname")
-            .populate("created_by", "id username fullname, phone email type level")
-            .populate("updated_by", "id username fullname, phone email type level")
-            .skip(skip)
-            .limit(limit)
-            .sort(sort)
-            .select(projection)
-            .exec();
+        const result = getMessage(query);
         if (!result) {
             return notFound(res, "Error: Bad Request: Model not found");
         }

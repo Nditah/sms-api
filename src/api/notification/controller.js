@@ -3,6 +3,7 @@ import log4js from "log4js";
 import aqp from "api-query-params";
 import Notification, { schemaCreate, schemaUpdate } from "./model";
 import { success, fail, notFound, isObjecId } from "../../lib";
+import User from "../user/model";
 
 // Logging
 const logger = log4js.getLogger("[notification]");
@@ -11,19 +12,22 @@ log4js.configure({
     categories: { default: { appenders: ["file"], level: "debug" } },
 });
 
+export async function getNotification(query) {
+    const { filter, skip, limit, sort, projection } = aqp(query);
+    const result = await Notification.find(filter)
+        .populate("user", "id phone email credit")
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .select(projection)
+        .exec();
+    return result;
+}
+
 export async function fetchRecord(req, res) {
     const { query } = req;
-    const { filter, skip, limit, sort, projection } = aqp(query);
     try {
-        const result = await Notification.find(filter)
-            .populate("user", "id, username, fullname, email, phone")
-            .populate("created_by", "id username fullname, phone email type level")
-            .populate("updated_by", "id username fullname, phone email type level")
-            .skip(skip)
-            .limit(limit)
-            .sort(sort)
-            .select(projection)
-            .exec();
+        const result = getNotification(query);
         if (!result) {
             return notFound(res, "Error: Bad Request: Model not found");
         }

@@ -3,213 +3,236 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.deleteRecord = exports.updateRecord = exports.createRecord = exports.fetchRecord = undefined;
+exports.deleteRecord = exports.updateRecord = exports.createRecord = exports.fetchRecord = exports.getNotification = undefined;
 
-var fetchRecord = exports.fetchRecord = function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-        var query, _aqp, filter, skip, limit, sort, projection, result;
+var getNotification = exports.getNotification = function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(query) {
+        var _aqp, filter, skip, limit, sort, projection, result;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
                     case 0:
-                        query = req.query;
                         _aqp = (0, _apiQueryParams2.default)(query), filter = _aqp.filter, skip = _aqp.skip, limit = _aqp.limit, sort = _aqp.sort, projection = _aqp.projection;
-                        _context.prev = 2;
-                        _context.next = 5;
-                        return _model2.default.find(filter).populate("user", "id, username, fullname, email, phone").populate("created_by", "id username fullname, phone email type level").populate("updated_by", "id username fullname, phone email type level").skip(skip).limit(limit).sort(sort).select(projection).exec();
+                        _context.next = 3;
+                        return _model2.default.find(filter).populate("user", "id phone email credit").skip(skip).limit(limit).sort(sort).select(projection).exec();
+
+                    case 3:
+                        result = _context.sent;
+                        return _context.abrupt("return", result);
 
                     case 5:
-                        result = _context.sent;
-
-                        if (result) {
-                            _context.next = 8;
-                            break;
-                        }
-
-                        return _context.abrupt("return", (0, _lib.notFound)(res, "Error: Bad Request: Model not found"));
-
-                    case 8:
-                        logger.info("Operation was successful", []);
-                        return _context.abrupt("return", (0, _lib.success)(res, 201, result, null));
-
-                    case 12:
-                        _context.prev = 12;
-                        _context.t0 = _context["catch"](2);
-
-                        logger.error(_context.t0);
-                        return _context.abrupt("return", (0, _lib.fail)(res, 500, "Error retrieving record. " + _context.t0.message));
-
-                    case 16:
                     case "end":
                         return _context.stop();
                 }
             }
-        }, _callee, null, [[2, 12]]);
+        }, _callee);
     }));
 
-    return function fetchRecord(_x, _x2) {
+    return function getNotification(_x) {
         return _ref.apply(this, arguments);
     };
 }();
 
-var createRecord = exports.createRecord = function () {
+var fetchRecord = exports.fetchRecord = function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
-        var data, _Joi$validate, error, newRecord, result;
-
+        var query, result;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
             while (1) {
                 switch (_context2.prev = _context2.next) {
                     case 0:
-                        data = req.body;
-                        _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
-
-                        if (!error) {
-                            _context2.next = 4;
-                            break;
-                        }
-
-                        return _context2.abrupt("return", (0, _lib.fail)(res, 422, "Error validating request data. " + error.message));
-
-                    case 4:
-                        newRecord = new _model2.default(data);
-                        _context2.prev = 5;
-                        _context2.next = 8;
-                        return newRecord.save();
-
-                    case 8:
-                        result = _context2.sent;
+                        query = req.query;
+                        _context2.prev = 1;
+                        result = getNotification(query);
 
                         if (result) {
-                            _context2.next = 12;
+                            _context2.next = 5;
                             break;
                         }
 
-                        logger.info("Operation was successful", []);
                         return _context2.abrupt("return", (0, _lib.notFound)(res, "Error: Bad Request: Model not found"));
 
-                    case 12:
-                        return _context2.abrupt("return", (0, _lib.success)(res, 201, result, "Record created successfully!"));
+                    case 5:
+                        logger.info("Operation was successful", []);
+                        return _context2.abrupt("return", (0, _lib.success)(res, 201, result, null));
 
-                    case 15:
-                        _context2.prev = 15;
-                        _context2.t0 = _context2["catch"](5);
+                    case 9:
+                        _context2.prev = 9;
+                        _context2.t0 = _context2["catch"](1);
 
                         logger.error(_context2.t0);
-                        return _context2.abrupt("return", (0, _lib.fail)(res, 500, "Error creating record. " + _context2.t0.message));
+                        return _context2.abrupt("return", (0, _lib.fail)(res, 500, "Error retrieving record. " + _context2.t0.message));
 
-                    case 19:
+                    case 13:
                     case "end":
                         return _context2.stop();
                 }
             }
-        }, _callee2, null, [[5, 15]]);
+        }, _callee2, null, [[1, 9]]);
     }));
 
-    return function createRecord(_x3, _x4) {
+    return function fetchRecord(_x2, _x3) {
         return _ref2.apply(this, arguments);
     };
 }();
 
-var updateRecord = exports.updateRecord = function () {
+var createRecord = exports.createRecord = function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var data, id, _Joi$validate2, error, result;
+        var data, _Joi$validate, error, newRecord, result;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
                         data = req.body;
-                        id = req.params.recordId;
-                        _Joi$validate2 = _joi2.default.validate(data, _model.schemaUpdate), error = _Joi$validate2.error;
+                        _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
 
                         if (!error) {
-                            _context3.next = 5;
+                            _context3.next = 4;
                             break;
                         }
 
                         return _context3.abrupt("return", (0, _lib.fail)(res, 422, "Error validating request data. " + error.message));
 
-                    case 5:
+                    case 4:
+                        newRecord = new _model2.default(data);
                         _context3.prev = 5;
                         _context3.next = 8;
-                        return _model2.default.findOneAndUpdate({ _id: id }, data, { new: true });
+                        return newRecord.save();
 
                     case 8:
                         result = _context3.sent;
 
                         if (result) {
-                            _context3.next = 11;
+                            _context3.next = 12;
                             break;
                         }
 
-                        return _context3.abrupt("return", (0, _lib.notFound)(res, "Bad Request: Model not found with id " + id));
+                        logger.info("Operation was successful", []);
+                        return _context3.abrupt("return", (0, _lib.notFound)(res, "Error: Bad Request: Model not found"));
 
-                    case 11:
-                        return _context3.abrupt("return", (0, _lib.success)(res, 200, result, "Record updated successfully!"));
+                    case 12:
+                        return _context3.abrupt("return", (0, _lib.success)(res, 201, result, "Record created successfully!"));
 
-                    case 14:
-                        _context3.prev = 14;
+                    case 15:
+                        _context3.prev = 15;
                         _context3.t0 = _context3["catch"](5);
 
                         logger.error(_context3.t0);
-                        return _context3.abrupt("return", (0, _lib.fail)(res, 500, "Error updating record. " + _context3.t0.message));
+                        return _context3.abrupt("return", (0, _lib.fail)(res, 500, "Error creating record. " + _context3.t0.message));
 
-                    case 18:
+                    case 19:
                     case "end":
                         return _context3.stop();
                 }
             }
-        }, _callee3, null, [[5, 14]]);
+        }, _callee3, null, [[5, 15]]);
     }));
 
-    return function updateRecord(_x5, _x6) {
+    return function createRecord(_x4, _x5) {
         return _ref3.apply(this, arguments);
     };
 }();
 
-var deleteRecord = exports.deleteRecord = function () {
+var updateRecord = exports.updateRecord = function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
-        var id, result;
+        var data, id, _Joi$validate2, error, result;
+
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
                 switch (_context4.prev = _context4.next) {
                     case 0:
+                        data = req.body;
                         id = req.params.recordId;
-                        _context4.prev = 1;
-                        _context4.next = 4;
-                        return _model2.default.findOneAndRemove({ _id: id });
+                        _Joi$validate2 = _joi2.default.validate(data, _model.schemaUpdate), error = _Joi$validate2.error;
 
-                    case 4:
+                        if (!error) {
+                            _context4.next = 5;
+                            break;
+                        }
+
+                        return _context4.abrupt("return", (0, _lib.fail)(res, 422, "Error validating request data. " + error.message));
+
+                    case 5:
+                        _context4.prev = 5;
+                        _context4.next = 8;
+                        return _model2.default.findOneAndUpdate({ _id: id }, data, { new: true });
+
+                    case 8:
                         result = _context4.sent;
 
                         if (result) {
-                            _context4.next = 7;
+                            _context4.next = 11;
                             break;
                         }
 
                         return _context4.abrupt("return", (0, _lib.notFound)(res, "Bad Request: Model not found with id " + id));
 
-                    case 7:
-                        return _context4.abrupt("return", (0, _lib.success)(res, 200, result, "Record deleted successfully!"));
-
-                    case 10:
-                        _context4.prev = 10;
-                        _context4.t0 = _context4["catch"](1);
-
-                        logger.error(_context4.t0);
-                        return _context4.abrupt("return", (0, _lib.fail)(res, 500, "Error deleting record. " + _context4.t0.message));
+                    case 11:
+                        return _context4.abrupt("return", (0, _lib.success)(res, 200, result, "Record updated successfully!"));
 
                     case 14:
+                        _context4.prev = 14;
+                        _context4.t0 = _context4["catch"](5);
+
+                        logger.error(_context4.t0);
+                        return _context4.abrupt("return", (0, _lib.fail)(res, 500, "Error updating record. " + _context4.t0.message));
+
+                    case 18:
                     case "end":
                         return _context4.stop();
                 }
             }
-        }, _callee4, null, [[1, 10]]);
+        }, _callee4, null, [[5, 14]]);
     }));
 
-    return function deleteRecord(_x7, _x8) {
+    return function updateRecord(_x6, _x7) {
         return _ref4.apply(this, arguments);
+    };
+}();
+
+var deleteRecord = exports.deleteRecord = function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
+        var id, result;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+            while (1) {
+                switch (_context5.prev = _context5.next) {
+                    case 0:
+                        id = req.params.recordId;
+                        _context5.prev = 1;
+                        _context5.next = 4;
+                        return _model2.default.findOneAndRemove({ _id: id });
+
+                    case 4:
+                        result = _context5.sent;
+
+                        if (result) {
+                            _context5.next = 7;
+                            break;
+                        }
+
+                        return _context5.abrupt("return", (0, _lib.notFound)(res, "Bad Request: Model not found with id " + id));
+
+                    case 7:
+                        return _context5.abrupt("return", (0, _lib.success)(res, 200, result, "Record deleted successfully!"));
+
+                    case 10:
+                        _context5.prev = 10;
+                        _context5.t0 = _context5["catch"](1);
+
+                        logger.error(_context5.t0);
+                        return _context5.abrupt("return", (0, _lib.fail)(res, 500, "Error deleting record. " + _context5.t0.message));
+
+                    case 14:
+                    case "end":
+                        return _context5.stop();
+                }
+            }
+        }, _callee5, null, [[1, 10]]);
+    }));
+
+    return function deleteRecord(_x8, _x9) {
+        return _ref5.apply(this, arguments);
     };
 }();
 
@@ -230,6 +253,10 @@ var _model = require("./model");
 var _model2 = _interopRequireDefault(_model);
 
 var _lib = require("../../lib");
+
+var _model3 = require("../user/model");
+
+var _model4 = _interopRequireDefault(_model3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

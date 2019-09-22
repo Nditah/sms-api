@@ -2,7 +2,7 @@ import Joi from "joi";
 import log4js from "log4js";
 import aqp from "api-query-params";
 import Bank, { schemaCreate, schemaUpdate } from "./model";
-import { success, fail, notFound, isObjecId } from "../../lib";
+import { success, fail, notFound } from "../../lib";
 
 // Logging
 const logger = log4js.getLogger("[bank]");
@@ -16,8 +16,6 @@ export async function fetchRecord(req, res) {
     const { filter, skip, limit, sort, projection } = aqp(query);
     try {
         const result = await Bank.find(filter)
-            .populate("created_by", "id username fullname, phone email type level")
-            .populate("updated_by", "id username fullname, phone email type level")
             .skip(skip)
             .limit(limit)
             .sort(sort)

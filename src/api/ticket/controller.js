@@ -16,7 +16,7 @@ export async function fetchRecord(req, res) {
     const { filter, skip, limit, sort, projection } = aqp(query);
     try {
         const result = await Ticket.find(filter)
-            .populate("customer")
+            .populate("user")
             .skip(skip)
             .limit(limit)
             .sort(sort)

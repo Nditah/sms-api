@@ -11,30 +11,38 @@ var sendSmsAsync = function () {
             while (1) {
                 switch (_context.prev = _context.next) {
                     case 0:
-                        _context.prev = 0;
+                        if (sender && recipient && message) {
+                            _context.next = 2;
+                            break;
+                        }
+
+                        throw new Error("Invalid sendSmsAsync params");
+
+                    case 2:
+                        _context.prev = 2;
                         data = {
                             from: formatPhone(sender),
                             body: message,
                             to: formatPhone(recipient)
                         };
-                        _context.next = 4;
+                        _context.next = 6;
                         return client.messages.create(data);
 
-                    case 4:
+                    case 6:
                         result = _context.sent;
                         return _context.abrupt("return", result);
 
-                    case 8:
-                        _context.prev = 8;
-                        _context.t0 = _context["catch"](0);
+                    case 10:
+                        _context.prev = 10;
+                        _context.t0 = _context["catch"](2);
                         return _context.abrupt("return", _context.t0);
 
-                    case 11:
+                    case 13:
                     case "end":
                         return _context.stop();
                 }
             }
-        }, _callee, null, [[0, 8]]);
+        }, _callee, null, [[2, 10]]);
     }));
 
     return function sendSmsAsync(_x, _x2) {
@@ -94,11 +102,11 @@ var accountSid = process.env.TWILIO_ACCOUNT_SID;
 var authToken = process.env.TWILIO_AUTH_TOKEN;
 // eslint-disable-next-line new-cap
 var client = new twilio(accountSid, authToken);
-var sender = SMS.PEACE_SMS_SENDER;
+var sender = SMS.SENDER;
 
 function formatPhone(phone) {
-    var str = phone.toString();
-    str = str.trim();
+    if (!phone) return null;
+    var str = phone.trim();
     if (str.length === 11 && str[0] === "0") {
         str = "+234" + str.slice(1);
     }
@@ -109,6 +117,7 @@ function formatPhone(phone) {
 }
 
 function sendSms(recipient, message) {
+    if (!(sender && recipient && message)) throw new Error("Invalid sendSms params");
     var data = {
         from: formatPhone(sender),
         body: message,

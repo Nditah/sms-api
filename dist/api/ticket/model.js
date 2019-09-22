@@ -23,17 +23,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  * @author 4Dcoder
- * @property {ObjectId} customer Ticket customer
+ * @property {ObjectId} user Ticket user
  * @property {String} subject Ticket subject
  * @property {String} complaint Ticket complaint
  * @property {String} priority Ticket priority "LOW|NORMAL|HIGH"
  * @property {String} resolve_status Ticket status "OPEN|CLOSED|PENDING"
- * @description Ticket records customer issues to be resolved by Admin
+ * @description Ticket records user issues to be resolved by Admin
  */
 var Schema = _mongoose2.default.Schema;
 var ObjectId = Schema.Types.ObjectId;
 var schemaCreate = exports.schemaCreate = {
-    customer: _joi2.default.string().required(),
+    user: _joi2.default.string().required(),
     subject: _joi2.default.string().required(),
     complaint: _joi2.default.string().required(),
     priority: _joi2.default.string().required(),
@@ -41,7 +41,7 @@ var schemaCreate = exports.schemaCreate = {
 };
 
 var schemaUpdate = exports.schemaUpdate = {
-    customer: _joi2.default.string().optional(),
+    user: _joi2.default.string().optional(),
     subject: _joi2.default.string().optional(),
     complaint: _joi2.default.string().optional(),
     priority: _joi2.default.string().optional(),
@@ -50,7 +50,7 @@ var schemaUpdate = exports.schemaUpdate = {
 };
 
 var schema = exports.schema = {
-    customer: { type: ObjectId, ref: "Customer" },
+    user: { type: ObjectId, ref: "User" },
     subject: { type: String },
     complaint: { type: String },
     priority: { type: String, enum: ["LOW", "NORMAL", "HIGH"] },

@@ -39,6 +39,7 @@ import { DATABASE, GENDER } from "../../constants";
 import table from "./table";
 import Notification from "../notification/model";
 import Transaction from "../transaction/model";
+import { genCode } from "../../lib/helpers";
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;

@@ -4,7 +4,6 @@ import aqp from "api-query-params";
 import Sms, { schemaCreate } from "./model";
 import { success, fail, notFound, generateOtp, hash, stringToArrayPhone } from "../../lib";
 import { receiveSms, sendSmsAsync } from "../../services";
-
 import User from "../user/model";
 
 // Logging
@@ -14,17 +13,22 @@ log4js.configure({
     categories: { default: { appenders: ["file"], level: "debug" } },
 });
 
+export async function getSms(query) {
+    const { filter, skip, limit, sort, projection } = aqp(query);
+    const result = await Sms.find(filter)
+        .populate("user", "id phone email credit")
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .select(projection)
+        .exec();
+    return result;
+}
+
 export async function fetchRecord(req, res) {
     const { query } = req;
-    const { filter, skip, limit, sort, projection } = aqp(query);
     try {
-        const result = await Sms.find(filter)
-            .populate("created_by", "id phone email type")
-            .skip(skip)
-            .limit(limit)
-            .sort(sort)
-            .select(projection)
-            .exec();
+        const result = getSms(query);
         if (!result) {
             return notFound(res, "Error: Bad Request: Model not found");
         }
@@ -69,37 +73,25 @@ export async function createOtp(req, res) {
 // eslint-disable-next-line complexity
 export async function createRecord(req, res) {
     let data = {};
-    let user = {};
     if (req.method === "POST") {
         data = req.body;
     } else {
         data = req.query;
     }
-    const { code, email, password } = data;
     const { recipient: recipientArray } = data;
     try {
-        const { created_by: userId } = data;
-        if (userId) {
-            user = await User.findOne({ _id: userId }).exec();
-        } else {
-            user = await User.findOne().or([
-                { api_key: code, api_access: true },
-                { email, password, api_access: true },
-            ]).exec();
-            data.created_by = user._id;
-        }
-        if (!user) return fail(res, 403, `Authentication failed for ${code} ${email}`);
         const { error } = Joi.validate(data, schemaCreate);
         if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
 
         const myArray = stringToArrayPhone(recipientArray) || [];
         const sendingSms = myArray.length;
-        if (sendingSms > user.credit) {
-            return fail(res, 422, `Error! You have ${user.credit} units left. You cannot send ${sendingSms} sms`);
+        if (sendingSms > data.credit) {
+            return fail(res, 422, `Error! You have ${data.credit} units left. You cannot send ${sendingSms} sms`);
             // console.log(`You have ${user.sms_units}Units left. You cannot send ${sendingSms}`);
         }
         const resolvedFinalArray = await Promise.all(myArray.map(async (phone) => {
             const send = await sendSmsAsync(phone, data.message);
+            logger.error(send);
             data.sid = send.sid;
             data.recipient = phone;
             const newRecord = new Sms(data);
@@ -109,7 +101,6 @@ export async function createRecord(req, res) {
 
         const result2 = await User.findOneAndUpdate({ _id: data.created_by },
             { $inc: { credit: -sendingSms } }, { new: true });
-        console.log(result2.credit);
         return success(res, 201, resolvedFinalArray, "Record created successfully!");
     } catch (err) {
         logger.error(err);

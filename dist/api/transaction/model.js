@@ -23,7 +23,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  * @author 4Dcoder
- * @property {String} customer transaction reference txRef (required)
+ * @property {String} user transaction reference txRef (required)
  * @property {Number} amount Transaction amount paid (required)
  * @property {String} code transaction reference txRef (required)
  * @property {String} gateway_details transaction response Object (required)
@@ -36,9 +36,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @description Transaction model holds record of all banks transactions records
  */
 var Schema = _mongoose2.default.Schema;
+// eslint-disable-next-line import/no-cycle
+
 var ObjectId = Schema.Types.ObjectId;
 var schemaCreate = exports.schemaCreate = {
-    customer: _joi2.default.string().required(),
+    user: _joi2.default.string().required(),
     amount: _joi2.default.number().required(),
     code: _joi2.default.string().trim().required(),
     gateway_details: _joi2.default.object().optional(),
@@ -51,7 +53,7 @@ var schemaCreate = exports.schemaCreate = {
 };
 
 var schemaUpdate = exports.schemaUpdate = {
-    customer: _joi2.default.string().optional(),
+    user: _joi2.default.string().optional(),
     amount: _joi2.default.number().optional(),
     code: _joi2.default.string().trim().optional(),
     gateway_details: _joi2.default.object().optional(),
@@ -65,14 +67,14 @@ var schemaUpdate = exports.schemaUpdate = {
 };
 
 var schema = exports.schema = {
-    customer: { type: ObjectId, required: true, ref: "User" },
+    user: { type: ObjectId, required: true, ref: "User" },
     amount: { type: Number, required: [true, "Why no amount?"] },
     code: { type: String, alias: "trxref", uppercase: true, unique: true, required: true },
     gateway_details: {
         id: { type: Number },
         charged_amount: { type: Number },
         accountId: { type: Number },
-        customerId: { type: Number },
+        userId: { type: Number },
         currency: { type: String }
     },
     sms_units: { type: Number, required: [true, "Why no sms units?"] },

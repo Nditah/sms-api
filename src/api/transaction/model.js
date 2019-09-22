@@ -1,6 +1,6 @@
 /**
  * @author 4Dcoder
- * @property {String} customer transaction reference txRef (required)
+ * @property {String} user transaction reference txRef (required)
  * @property {Number} amount Transaction amount paid (required)
  * @property {String} code transaction reference txRef (required)
  * @property {String} gateway_details transaction response Object (required)
@@ -15,13 +15,14 @@
 import Joi from "joi";
 import mongoose from "mongoose";
 import { DATABASE, PAYMENT } from "../../constants";
+// eslint-disable-next-line import/no-cycle
 import User from "../user/model";
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
 export const schemaCreate = {
-    customer: Joi.string().required(),
+    user: Joi.string().required(),
     amount: Joi.number().required(),
     code: Joi.string().trim().required(),
     gateway_details: Joi.object().optional(),
@@ -34,7 +35,7 @@ export const schemaCreate = {
 };
 
 export const schemaUpdate = {
-    customer: Joi.string().optional(),
+    user: Joi.string().optional(),
     amount: Joi.number().optional(),
     code: Joi.string().trim().optional(),
     gateway_details: Joi.object().optional(),
@@ -48,14 +49,14 @@ export const schemaUpdate = {
 };
 
 export const schema = {
-    customer: { type: ObjectId, required: true, ref: "User" },
+    user: { type: ObjectId, required: true, ref: "User" },
     amount: { type: Number, required: [true, "Why no amount?"] },
     code: { type: String, alias: "trxref", uppercase: true, unique: true, required: true },
     gateway_details: {
         id: { type: Number },
         charged_amount: { type: Number },
         accountId: { type: Number },
-        customerId: { type: Number },
+        userId: { type: Number },
         currency: { type: String },
     },
     sms_units: { type: Number, required: [true, "Why no sms units?"] },

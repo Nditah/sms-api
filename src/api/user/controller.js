@@ -39,7 +39,7 @@ export async function fetchRecord(req, res) {
 // eslint-disable-next-line complexity
 export async function createRecord(req, res) {
     const data = req.body;
-    data.api_key = genCode(16);
+    data.api_key = genCode(16).toLowerCase();
     if (hasProp(data, "password")) data.password = hash(req.body.password);
     const { error } = Joi.validate(data, schemaCreate);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);

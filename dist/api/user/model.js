@@ -27,9 +27,11 @@ var _model3 = require("../transaction/model");
 
 var _model4 = _interopRequireDefault(_model3);
 
+var _helpers = require("../../lib/helpers");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* eslint-disable import/no-cycle */
+var Schema = _mongoose2.default.Schema; /* eslint-disable import/no-cycle */
 /**
  * @author 4Deapi_keyr
  * @property {String} id User ObjectId primaryKey
@@ -64,7 +66,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @property {String} updated_by User record modified by
  * @description User holds record of all cities with school_list
  */
-var Schema = _mongoose2.default.Schema;
+
 var ObjectId = Schema.Types.ObjectId;
 var schemaLogin = exports.schemaLogin = {
     email: _joi2.default.string().trim().email().optional(),

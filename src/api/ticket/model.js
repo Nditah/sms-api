@@ -1,11 +1,11 @@
 /**
  * @author 4Dcoder
- * @property {ObjectId} customer Ticket customer
+ * @property {ObjectId} user Ticket user
  * @property {String} subject Ticket subject
  * @property {String} complaint Ticket complaint
  * @property {String} priority Ticket priority "LOW|NORMAL|HIGH"
  * @property {String} resolve_status Ticket status "OPEN|CLOSED|PENDING"
- * @description Ticket records customer issues to be resolved by Admin
+ * @description Ticket records user issues to be resolved by Admin
  */
 import Joi from "joi";
 import mongoose from "mongoose";
@@ -16,7 +16,7 @@ const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
 export const schemaCreate = {
-    customer: Joi.string().required(),
+    user: Joi.string().required(),
     subject: Joi.string().required(),
     complaint: Joi.string().required(),
     priority: Joi.string().required(),
@@ -24,7 +24,7 @@ export const schemaCreate = {
 };
 
 export const schemaUpdate = {
-    customer: Joi.string().optional(),
+    user: Joi.string().optional(),
     subject: Joi.string().optional(),
     complaint: Joi.string().optional(),
     priority: Joi.string().optional(),
@@ -33,7 +33,7 @@ export const schemaUpdate = {
 };
 
 export const schema = {
-    customer: { type: ObjectId, ref: "Customer" },
+    user: { type: ObjectId, ref: "User" },
     subject: { type: String },
     complaint: { type: String },
     priority: { type: String, enum: ["LOW", "NORMAL", "HIGH"] },

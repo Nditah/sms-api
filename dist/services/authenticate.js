@@ -106,7 +106,13 @@ function userAuthenticate(loginPayload) {
         }
         // Delete private attributes
         user.password = null;
-        var payload = { id: user.id, type: user.type, email: email, phone: phone };
+        var payload = {
+            id: user.id,
+            type: user.type,
+            email: email,
+            phone: phone,
+            credit: user.credit
+        };
         var token = _jsonwebtoken2.default.sign(payload, _constants.JWT.jwtSecret);
         return { token: token, user: user };
     }).catch(function (err) {

@@ -66,7 +66,7 @@ var createRecord = exports.createRecord = function () {
                     case 0:
                         data = req.body;
 
-                        data.api_key = (0, _helpers.genCode)(16);
+                        data.api_key = (0, _helpers.genCode)(16).toLowerCase();
                         if ((0, _lib.hasProp)(data, "password")) data.password = (0, _lib.hash)(req.body.password);
                         _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
 

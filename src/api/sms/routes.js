@@ -26,27 +26,8 @@ router.get("/sms", [checkAuth, isValidUser], fetchRecord);
  * @api {post} /api/v1/sms Create an SMS record
  * @apiName CreateSms
  * @apiGroup Sms
- * @apiHeader {String} Authorization Bearer token
- * @apiParam {String} sender Sms registered sending phone
- * @apiParam {String} sender_as Sms sender's name or phone
- * @apiParam {String} recipient Sms recipient(s) phone with (required)
- * comma-separated list for multiple phone numbers as recipient(s)
- * @apiParam {String} message Sms message  (required)
- * @apiParam {String} delivery_status Sms delivery status
- *  queued|failed|sent|delivered|undelivered (prohibited)
- * @apiSuccess {Object} Sms Sms's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 404 Sms not found.
- * @apiError 401 master access only.
- */
-router.post("/sms", [checkAuth, isValidUser], createRecord);
-
-/**
- * @api {post} /api/v1/sms/externally Create an SMS Externally
- * @apiName CreateSmsExternally
- * @apiGroup Sms
  * @apiExample {curl} Example usage for sending sms externally:
- *      curl -i api/v1/sms/externally?code=abc123&email=somebody@example.com&
+ *      curl -i api/v1/sms?code=abc123&email=somebody@example.com&
  *         password=secret&recipient=+10000123&message=hello world sms
  * @apiParam {String} sender Sms registered sending phone
  * @apiParam {String} sender_as Sms sender's name or phone
@@ -61,8 +42,8 @@ router.post("/sms", [checkAuth, isValidUser], createRecord);
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 401 master access only.
  */
-router.post("/sms/externally", createRecord);
-router.get("/sms/externally", createRecord);
+router.post("/sms", [checkAuth, isValidUser], createRecord);
+router.get("/sms", [checkAuth, isValidUser], createRecord);
 
 /**
  * @api {post} /api/v1/sms/otp Create send SMS otp

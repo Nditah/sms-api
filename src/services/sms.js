@@ -10,11 +10,11 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 // eslint-disable-next-line new-cap
 const client = new twilio(accountSid, authToken);
-const sender = SMS.PEACE_SMS_SENDER;
+const sender = SMS.SENDER;
 
 function formatPhone(phone) {
-    let str = phone.toString();
-    str = str.trim();
+    if (!phone) return null;
+    let str = phone.trim();
     if (str.length === 11 && str[ 0 ] === "0") {
         str = `+234${str.slice(1)}`;
     }
@@ -25,6 +25,7 @@ function formatPhone(phone) {
 }
 
 function sendSms(recipient, message) {
+    if (!(sender && recipient && message)) throw new Error("Invalid sendSms params");
     const data = {
         from: formatPhone(sender),
         body: message,
@@ -36,6 +37,7 @@ function sendSms(recipient, message) {
 }
 
 async function sendSmsAsync(recipient, message) {
+    if (!(sender && recipient && message)) throw new Error("Invalid sendSmsAsync params");
     try {
         const data = {
             from: formatPhone(sender),

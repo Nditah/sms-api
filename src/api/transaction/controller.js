@@ -3,6 +3,7 @@ import log4js from "log4js";
 import aqp from "api-query-params";
 import Transaction, { schemaCreate, schemaUpdate } from "./model";
 import { success, fail, notFound } from "../../lib";
+import User from "../user/model";
 
 // Logging
 const logger = log4js.getLogger("[transaction]");
@@ -11,21 +12,26 @@ log4js.configure({
     categories: { default: { appenders: ["file"], level: "debug" } },
 });
 
+export async function getTransaction(query) {
+    const { filter, skip, limit, sort, projection } = aqp(query);
+    const result = await Transaction.find(filter)
+        .populate("user", "id phone email credit")
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .select(projection)
+        .exec();
+    return result;
+}
+
 export async function fetchRecord(req, res) {
     const { query } = req;
-    const { filter, skip, limit, sort, projection } = aqp(query);
     try {
-        const result = await Transaction.find(filter)
-            .populate("customer")
-            .skip(skip)
-            .limit(limit)
-            .sort(sort)
-            .select(projection)
-            .exec();
+        const result = getTransaction(query);
         if (!result) {
             return notFound(res, "Error: Bad Request: Model not found");
         }
-        logger.info("SUCCESS", []);
+        logger.info("Operation was successful", []);
         return success(res, 201, result, null);
     } catch (err) {
         logger.error(err);

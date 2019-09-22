@@ -2,6 +2,7 @@ import { verify } from "jsonwebtoken";
 import { JWT } from "../constants";
 import { fail } from "../lib/response";
 import { hasProp } from "../lib/helpers";
+import User from "../api/user/model";
 
 // Retrieve token from request header
 export function getToken(req) {
@@ -13,9 +14,31 @@ export function getToken(req) {
     return null;
 }
 
-export function checkAuth(req, res, next) {
+// eslint-disable-next-line complexity
+export async function checkAuth(req, res, next) {
+    const { code, email, password } = req.query;
+    const apiKey = code ? code.toLowerCase() : "";
     const token = getToken(req);
-    if (!token) return fail(res, 403, "No token found in request header!");
+    if (!token) {
+        const user = await User.findOne().or([
+            { api_key: apiKey, api_access: true },
+            { email, password, api_access: true },
+        ]).exec();
+        if (!user) return fail(res, 403, "No token found in request header!");
+        req.user = {
+            id: user._id,
+            type: user.type,
+            email: user.email,
+            phone: user.phone,
+            credit: user.credit,
+        };
+        if (req.method === "POST" && (code || email)) {
+            req.body.created_by = `${req.user.id}`;
+        } else if (req.method === "PUT" && (code || email)) {
+            req.body.updated_by = `${req.user.id}`;
+        }
+        return next();
+    }
     return verify(token, JWT.jwtSecret, (err, decoded) => {
         if (err) return fail(res, 403, "Failed to authenticate token.!");
         req.user = {
@@ -23,6 +46,7 @@ export function checkAuth(req, res, next) {
             type: decoded.type,
             email: decoded.email,
             phone: decoded.phone,
+            credit: decoded.credit,
         };
         if (req.method === "POST") {
             req.body.created_by = decoded.id;

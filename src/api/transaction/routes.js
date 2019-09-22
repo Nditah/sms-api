@@ -28,7 +28,7 @@ router.get("/transactions", [checkAuth, isValidUser], fetchRecord);
  * @apiName CreateTransaction
  * @apiGroup Transaction
  * @apiHeader {String} Authorization Bearer token
- * @apiParam {String} customer transaction reference txRef (required)
+ * @apiParam {String} user transaction reference txRef (required)
  * @apiParam {Number} amount Transaction amount paid (required)
  * @apiParam {String} code transaction reference txRef (required)
  * @apiParam {String} gateway_details transaction response Object (required)
@@ -51,7 +51,7 @@ router.post("/transactions", [checkAuth, isValidUser], createRecord);
  * @apiGroup Transaction
  * @apiHeader {String} Authorization Bearer token
  * @apiParam {String} recordId required record ObjectId
- * @apiParam {String} customer transaction reference txRef (required)
+ * @apiParam {String} user transaction reference txRef (required)
  * @apiParam {Number} amount Transaction amount paid (required)
  * @apiParam {String} code transaction reference txRef (required)
  * @apiParam {String} gateway_details transaction response Object (required)

@@ -1,0 +1,9 @@
+{
+  "name": "SMS Portal APIv1",
+  "version": "0.1.0",
+  "description": "SMS Gateway Api for third party subscription",
+  "apidoc": {
+    "title": "SMS Portal ApiDoc",
+    "url" : "https://github.com/Nditah/sms-app"
+  }
+}

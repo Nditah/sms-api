@@ -1,0 +1,1 @@
+define({  "name": "SMS Portal APIv1",  "version": "0.1.0",  "description": "SMS Gateway Api for third party subscription",  "apidoc": "0.3.0",  "sampleUrl": false,  "defaultVersion": "0.0.0",  "generator": {    "name": "apidoc",    "time": "2019-09-21T23:42:00.333Z",    "url": "http://apidocjs.com",    "version": "0.17.7"  }});

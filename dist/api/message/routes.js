@@ -32,7 +32,7 @@ var router = _express2.default.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/messages", [_authorization.checkAuth, _authorization.isValidAdmin], _controller.fetchRecord);
+router.get("/messages", [_authorization.checkAuth], _controller.fetchRecord);
 
 /**
  * @api {post} /api/v1/messages Create messages
@@ -52,7 +52,7 @@ router.get("/messages", [_authorization.checkAuth, _authorization.isValidAdmin],
  * @apiError 404 Message not found.
  * @apiError 401 master access only.
  */
-router.post("/messages", [_authorization.checkAuth, _authorization.isValidAdmin], _controller.createRecord);
+router.post("/messages", [_authorization.checkAuth], _controller.createRecord);
 
 /**
  * @api {delete} /api/v1/messages/{recordId} Delete messages

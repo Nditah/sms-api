@@ -11,22 +11,20 @@ log4js.configure({
     categories: { default: { appenders: ["file"], level: "debug" } },
 });
 
-export async function getNotification(query) {
-    const { filter, skip, limit, sort, projection } = aqp(query);
-    const result = await Notification.find(filter)
-        .populate("user", "title surname given_name email phone credit blocked deleted")
-        .skip(skip)
-        .limit(limit)
-        .sort(sort)
-        .select(projection)
-        .exec();
-    return result;
-}
-
 export async function fetchRecord(req, res) {
     const { query } = req;
     try {
-        const result = getNotification(query);
+        const { filter, skip, limit, sort, projection } = aqp(query);
+        if (req.user.type === "CUSTOMER") {
+            filter.user = req.user.id;
+        }
+        const result = await Notification.find(filter)
+            .populate("user", "title surname given_name email phone credit blocked deleted")
+            .skip(skip)
+            .limit(limit)
+            .sort(sort)
+            .select(projection)
+            .exec();
         if (!result) {
             return notFound(res, "Error: Bad Request: Model not found");
         }

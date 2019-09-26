@@ -14,38 +14,42 @@ var fetchRecord = exports.fetchRecord = function () {
                 switch (_context.prev = _context.next) {
                     case 0:
                         query = req.query;
+                        _context.prev = 1;
                         _aqp = (0, _apiQueryParams2.default)(query), filter = _aqp.filter, skip = _aqp.skip, limit = _aqp.limit, sort = _aqp.sort, projection = _aqp.projection;
-                        _context.prev = 2;
-                        _context.next = 5;
+
+                        if (req.user.type === "CUSTOMER") {
+                            filter.user = req.user.id;
+                        }
+                        _context.next = 6;
                         return _model2.default.find(filter).populate("user", "title surname given_name email phone credit blocked deleted").skip(skip).limit(limit).sort(sort).select(projection).exec();
 
-                    case 5:
+                    case 6:
                         result = _context.sent;
 
                         if (result) {
-                            _context.next = 8;
+                            _context.next = 9;
                             break;
                         }
 
                         return _context.abrupt("return", (0, _lib.notFound)(res, "Error: Bad Request: Model not found"));
 
-                    case 8:
-                        logger.info("SUCCESS", []);
+                    case 9:
+                        logger.info("Operation was successful", []);
                         return _context.abrupt("return", (0, _lib.success)(res, 201, result, null));
 
-                    case 12:
-                        _context.prev = 12;
-                        _context.t0 = _context["catch"](2);
+                    case 13:
+                        _context.prev = 13;
+                        _context.t0 = _context["catch"](1);
 
                         logger.error(_context.t0);
                         return _context.abrupt("return", (0, _lib.fail)(res, 500, "Error retrieving record. " + _context.t0.message));
 
-                    case 16:
+                    case 17:
                     case "end":
                         return _context.stop();
                 }
             }
-        }, _callee, null, [[2, 12]]);
+        }, _callee, null, [[1, 13]]);
     }));
 
     return function fetchRecord(_x, _x2) {

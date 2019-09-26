@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuth, isValidAdmin, isValidUser } from "../../middleware/authorization";
+import { checkAuth, isValidAdmin } from "../../middleware/authorization";
 import { fetchRecord, createRecord, updateRecord, deleteRecord } from "./controller";
 
 const router = express.Router();
@@ -20,7 +20,7 @@ const router = express.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/notifications", [checkAuth, isValidUser], fetchRecord);
+router.get("/notifications", [checkAuth], fetchRecord);
 
 /**
  * @api {post} /api/v1/notifications Create a Notification record
@@ -51,7 +51,7 @@ router.post("/notifications", [checkAuth, isValidAdmin], createRecord);
  * @apiError 404 Notification not found.
  * @apiError 401 master access only.
  */
-router.put("/notifications/:recordId", [checkAuth, isValidUser], updateRecord);
+router.put("/notifications/:recordId", [checkAuth], updateRecord);
 
 /**
  * @api {delete} /api/v1/notifications/{recordId} Delete a Notification record

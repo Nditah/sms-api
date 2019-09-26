@@ -19,7 +19,7 @@ const router = express.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/banks", [checkAuth, isValidAdmin], fetchRecord);
+router.get("/banks", [checkAuth], fetchRecord);
 
 /**
  * @api {post} /api/v1/banks Create banks

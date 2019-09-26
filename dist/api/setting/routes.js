@@ -32,7 +32,7 @@ var router = _express2.default.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/settings/public", _controller.fetchRecordPublic);
+router.get("/settings/public", _authorization.checkAuth, _controller.fetchRecordPublic);
 
 /**
  * @api {get} /api/v1/settings?id={recordId} Retrieve Settings record(s)

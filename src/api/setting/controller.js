@@ -1,8 +1,8 @@
-import Joi from "joi";
+import Joi from "@hapi/joi";
 import log4js from "log4js";
 import aqp from "api-query-params";
 import Setting, { schemaUpdate } from "./model";
-import { success, fail, notFound, isObjecId } from "../../lib";
+import { success, fail, notFound } from "../../lib";
 
 // Logging
 const logger = log4js.getLogger("[setting]");
@@ -57,7 +57,7 @@ export async function fetchRecord(req, res) {
 export async function updateRecord(req, res) {
     const data = req.body;
     const { recordId: id } = req.params;
-    const { error } = Joi.validate(data, schemaUpdate);
+    const { error } = schemaUpdate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     try {
         const result = await Setting.findOneAndUpdate({ _id: id }, data, { new: true }).exec();

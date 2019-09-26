@@ -15,7 +15,7 @@ var getSms = exports.getSms = function () {
                     case 0:
                         _aqp = (0, _apiQueryParams2.default)(query), filter = _aqp.filter, skip = _aqp.skip, limit = _aqp.limit, sort = _aqp.sort, projection = _aqp.projection;
                         _context.next = 3;
-                        return _model2.default.find(filter).populate("user", "id phone email credit").skip(skip).limit(limit).sort(sort).select(projection).exec();
+                        return _model2.default.find(filter).populate("user", "title surname given_name email phone credit blocked deleted").skip(skip).limit(limit).sort(sort).select(projection).exec();
 
                     case 3:
                         result = _context.sent;
@@ -161,7 +161,7 @@ var createOtp = exports.createOtp = function () {
 
 var createRecord = exports.createRecord = function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
-        var data, _data, recipientArray, _Joi$validate, error, myArray, sendingSms, resolvedFinalArray, result2;
+        var data, _data, recipientList, _schemaCreate$validat, error, myArray, sendingSms, resolvedFinalArray, result2;
 
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
@@ -174,30 +174,32 @@ var createRecord = exports.createRecord = function () {
                         } else {
                             data = req.query;
                         }
-                        _data = data, recipientArray = _data.recipient;
+                        _data = data, recipientList = _data.recipient;
                         _context5.prev = 3;
-                        _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
+
+                        data.code = (0, _lib.genCode)(32);
+                        _schemaCreate$validat = _model.schemaCreate.validate(data), error = _schemaCreate$validat.error;
 
                         if (!error) {
-                            _context5.next = 7;
+                            _context5.next = 8;
                             break;
                         }
 
                         return _context5.abrupt("return", (0, _lib.fail)(res, 422, "Error validating request data. " + error.message));
 
-                    case 7:
-                        myArray = (0, _lib.stringToArrayPhone)(recipientArray) || [];
+                    case 8:
+                        myArray = (0, _lib.stringToArrayPhone)(recipientList) || [];
                         sendingSms = myArray.length;
 
                         if (!(sendingSms > data.credit)) {
-                            _context5.next = 11;
+                            _context5.next = 12;
                             break;
                         }
 
                         return _context5.abrupt("return", (0, _lib.fail)(res, 422, "Error! You have " + data.credit + " units left. You cannot send " + sendingSms + " sms"));
 
-                    case 11:
-                        _context5.next = 13;
+                    case 12:
+                        _context5.next = 14;
                         return Promise.all(myArray.map(function () {
                             var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(phone) {
                                 var send, newRecord, result;
@@ -236,28 +238,28 @@ var createRecord = exports.createRecord = function () {
                         }() // important to return the value
                         ));
 
-                    case 13:
+                    case 14:
                         resolvedFinalArray = _context5.sent;
-                        _context5.next = 16;
+                        _context5.next = 17;
                         return _model4.default.findOneAndUpdate({ _id: data.created_by }, { $inc: { credit: -sendingSms } }, { new: true });
 
-                    case 16:
+                    case 17:
                         result2 = _context5.sent;
                         return _context5.abrupt("return", (0, _lib.success)(res, 201, resolvedFinalArray, "Record created successfully!"));
 
-                    case 20:
-                        _context5.prev = 20;
+                    case 21:
+                        _context5.prev = 21;
                         _context5.t0 = _context5["catch"](3);
 
                         logger.error(_context5.t0);
                         return _context5.abrupt("return", (0, _lib.fail)(res, 500, "Error creating record. " + _context5.t0.message));
 
-                    case 24:
+                    case 25:
                     case "end":
                         return _context5.stop();
                 }
             }
-        }, _callee5, null, [[3, 20]]);
+        }, _callee5, null, [[3, 21]]);
     }));
 
     return function createRecord(_x6, _x7) {
@@ -290,7 +292,7 @@ var createWebhook = exports.createWebhook = function () {
     };
 }();
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 

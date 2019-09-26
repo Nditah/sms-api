@@ -15,7 +15,7 @@ var getNotification = exports.getNotification = function () {
                     case 0:
                         _aqp = (0, _apiQueryParams2.default)(query), filter = _aqp.filter, skip = _aqp.skip, limit = _aqp.limit, sort = _aqp.sort, projection = _aqp.projection;
                         _context.next = 3;
-                        return _model2.default.find(filter).populate("user", "id phone email credit").skip(skip).limit(limit).sort(sort).select(projection).exec();
+                        return _model2.default.find(filter).populate("user", "title surname given_name email phone credit blocked deleted").skip(skip).limit(limit).sort(sort).select(projection).exec();
 
                     case 3:
                         result = _context.sent;
@@ -78,14 +78,14 @@ var fetchRecord = exports.fetchRecord = function () {
 
 var createRecord = exports.createRecord = function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var data, _Joi$validate, error, newRecord, result;
+        var data, _schemaCreate$validat, error, newRecord, result, result2;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
                         data = req.body;
-                        _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
+                        _schemaCreate$validat = _model.schemaCreate.validate(data), error = _schemaCreate$validat.error;
 
                         if (!error) {
                             _context3.next = 4;
@@ -112,21 +112,26 @@ var createRecord = exports.createRecord = function () {
                         return _context3.abrupt("return", (0, _lib.notFound)(res, "Error: Bad Request: Model not found"));
 
                     case 12:
+                        _context3.next = 14;
+                        return _model4.default.update({ _id: result.user._id }, { $push: { notifications: result._id } }).exec();
+
+                    case 14:
+                        result2 = _context3.sent;
                         return _context3.abrupt("return", (0, _lib.success)(res, 201, result, "Record created successfully!"));
 
-                    case 15:
-                        _context3.prev = 15;
+                    case 18:
+                        _context3.prev = 18;
                         _context3.t0 = _context3["catch"](5);
 
                         logger.error(_context3.t0);
                         return _context3.abrupt("return", (0, _lib.fail)(res, 500, "Error creating record. " + _context3.t0.message));
 
-                    case 19:
+                    case 22:
                     case "end":
                         return _context3.stop();
                 }
             }
-        }, _callee3, null, [[5, 15]]);
+        }, _callee3, null, [[5, 18]]);
     }));
 
     return function createRecord(_x4, _x5) {
@@ -136,7 +141,7 @@ var createRecord = exports.createRecord = function () {
 
 var updateRecord = exports.updateRecord = function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
-        var data, id, _Joi$validate2, error, result;
+        var data, id, _schemaUpdate$validat, error, result;
 
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
@@ -144,7 +149,7 @@ var updateRecord = exports.updateRecord = function () {
                     case 0:
                         data = req.body;
                         id = req.params.recordId;
-                        _Joi$validate2 = _joi2.default.validate(data, _model.schemaUpdate), error = _Joi$validate2.error;
+                        _schemaUpdate$validat = _model.schemaUpdate.validate(data), error = _schemaUpdate$validat.error;
 
                         if (!error) {
                             _context4.next = 5;
@@ -193,7 +198,7 @@ var updateRecord = exports.updateRecord = function () {
 
 var deleteRecord = exports.deleteRecord = function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
-        var id, result;
+        var id, result, result2;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
                 switch (_context5.prev = _context5.next) {
@@ -214,31 +219,32 @@ var deleteRecord = exports.deleteRecord = function () {
                         return _context5.abrupt("return", (0, _lib.notFound)(res, "Bad Request: Model not found with id " + id));
 
                     case 7:
+                        _context5.next = 9;
+                        return _model4.default.update({ _id: result.user._id }, { $pull: { notifications: result._id } }).exec();
+
+                    case 9:
+                        result2 = _context5.sent;
                         return _context5.abrupt("return", (0, _lib.success)(res, 200, result, "Record deleted successfully!"));
 
-                    case 10:
-                        _context5.prev = 10;
+                    case 13:
+                        _context5.prev = 13;
                         _context5.t0 = _context5["catch"](1);
 
                         logger.error(_context5.t0);
                         return _context5.abrupt("return", (0, _lib.fail)(res, 500, "Error deleting record. " + _context5.t0.message));
 
-                    case 14:
+                    case 17:
                     case "end":
                         return _context5.stop();
                 }
             }
-        }, _callee5, null, [[1, 10]]);
+        }, _callee5, null, [[1, 13]]);
     }));
 
     return function deleteRecord(_x8, _x9) {
         return _ref5.apply(this, arguments);
     };
 }();
-
-var _joi = require("joi");
-
-var _joi2 = _interopRequireDefault(_joi);
 
 var _log4js = require("log4js");
 

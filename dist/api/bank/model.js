@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.schema = exports.schemaUpdate = exports.schemaCreate = undefined;
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 
@@ -39,7 +39,7 @@ var Schema = _mongoose2.default.Schema; /* eslint-disable import/no-cycle */
  */
 
 var ObjectId = Schema.Types.ObjectId;
-var schemaCreate = exports.schemaCreate = {
+var schemaCreate = exports.schemaCreate = _joi2.default.object({
     name: _joi2.default.string().trim().required(),
     sort_code: _joi2.default.string().trim().required(),
     bank_code: _joi2.default.string().required(),
@@ -47,9 +47,9 @@ var schemaCreate = exports.schemaCreate = {
     contact_person: _joi2.default.string().optional(),
     website: _joi2.default.string().optional(),
     created_by: _joi2.default.string().required()
-};
+});
 
-var schemaUpdate = exports.schemaUpdate = {
+var schemaUpdate = exports.schemaUpdate = _joi2.default.object({
     name: _joi2.default.string().trim().optional(),
     sort_code: _joi2.default.string().trim().optional(),
     bank_code: _joi2.default.string().optional(),
@@ -57,7 +57,7 @@ var schemaUpdate = exports.schemaUpdate = {
     contact_person: _joi2.default.string().optional(),
     website: _joi2.default.string().optional(),
     updated_by: _joi2.default.string().required()
-};
+});
 
 var schema = exports.schema = {
     name: { type: String, required: [true, "Why no input?"], unique: true },

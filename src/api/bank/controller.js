@@ -1,4 +1,3 @@
-import Joi from "joi";
 import log4js from "log4js";
 import aqp from "api-query-params";
 import Bank, { schemaCreate, schemaUpdate } from "./model";
@@ -34,7 +33,7 @@ export async function fetchRecord(req, res) {
 
 export async function createRecord(req, res) {
     const data = req.body;
-    const { error } = Joi.validate(data, schemaCreate);
+    const { error } = schemaCreate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     const newRecord = new Bank(data);
     try {
@@ -53,7 +52,7 @@ export async function createRecord(req, res) {
 export async function updateRecord(req, res) {
     const data = req.body;
     const { recordId: id } = req.params;
-    const { error } = Joi.validate(data, schemaUpdate);
+    const { error } = schemaUpdate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     try {
         const result = await Bank.findOneAndUpdate({ _id: id }, data, { new: true });

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.schema = exports.schemaUpdate = exports.schemaCreate = undefined;
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 
@@ -39,32 +39,32 @@ var Schema = _mongoose2.default.Schema;
 // eslint-disable-next-line import/no-cycle
 
 var ObjectId = Schema.Types.ObjectId;
-var schemaCreate = exports.schemaCreate = {
+var schemaCreate = exports.schemaCreate = _joi2.default.object({
     user: _joi2.default.string().required(),
     amount: _joi2.default.number().required(),
     code: _joi2.default.string().trim().required(),
     gateway_details: _joi2.default.object().optional(),
     sms_units: _joi2.default.number().required(),
-    payment_method: _joi2.default.string().valid(Object.values(_constants.PAYMENT.METHOD)).required(),
-    payment_gateway: _joi2.default.string().valid(Object.values(_constants.PAYMENT.GATEWAY)).required(),
-    payment_status: _joi2.default.string().valid(Object.values(_constants.PAYMENT.STATUS)).required(),
+    payment_method: _joi2.default.string().valid("GATEWAY", "POS", "CASH", "CHEQUE", "TRANSFER", "USSD").required(),
+    payment_gateway: _joi2.default.string().valid("FLUTTERWAVE", "INTERSWITCH", "UNIONBANK", "PAYSTACK", "STRIPE", "PAYPAL", "GOOGLE_WALLET").required(),
+    payment_status: _joi2.default.string().valid("PENDING", "SUCCESSFUL", "FAIL").required(),
     description: _joi2.default.string().optional(),
     created_by: _joi2.default.string().required()
-};
+});
 
-var schemaUpdate = exports.schemaUpdate = {
+var schemaUpdate = exports.schemaUpdate = _joi2.default.object({
     user: _joi2.default.string().optional(),
     amount: _joi2.default.number().optional(),
     code: _joi2.default.string().trim().optional(),
     gateway_details: _joi2.default.object().optional(),
     sms_units: _joi2.default.number().optional(),
-    payment_method: _joi2.default.string().valid(Object.values(_constants.PAYMENT.METHOD)).optional(),
-    payment_gateway: _joi2.default.string().valid(Object.values(_constants.PAYMENT.GATEWAY)).optional(),
-    payment_status: _joi2.default.string().valid(Object.values(_constants.PAYMENT.STATUS)).optional(),
+    payment_method: _joi2.default.string().valid("GATEWAY", "POS", "CASH", "CHEQUE", "TRANSFER", "USSD").optional(),
+    payment_gateway: _joi2.default.string().valid("FLUTTERWAVE", "INTERSWITCH", "UNIONBANK", "PAYSTACK", "STRIPE", "PAYPAL", "GOOGLE_WALLET").optional(),
+    payment_status: _joi2.default.string().valid("PENDING", "SUCCESSFUL", "FAIL").optional(),
     description: _joi2.default.string().optional(),
-    credit_status: _joi2.default.string().valid(["PENDING", "CREDITED", "REJECTED"]).optional(),
+    credit_status: _joi2.default.string().valid("PENDING", "CREDITED", "REJECTED").optional(),
     updated_by: _joi2.default.string().required()
-};
+});
 
 var schema = exports.schema = {
     user: { type: ObjectId, required: true, ref: "User" },

@@ -77,20 +77,20 @@ export function getUser(req) {
 export function isValidUser(req, res, next) {
     const { type, id, email } = req.user;
     if (!(type === "CUSTOMER" || type === "ADMIN")) return fail(res, 403, "Invalid User credentials!");
-    console.log("\nValidating User: ", type, id, email);
+    console.log("Validating User: ", type, id, email);
     return next();
 }
 
 export function isValidCustomer(req, res, next) {
     const { type, id, email } = req.user;
     if (type !== "CUSTOMER") return fail(res, 403, "Invalid Customer credentials!");
-    console.log("\nValidating Customer: ", type, id, email);
+    console.log("Validating Customer: ", type, id, email);
     return next();
 }
 
 export function isValidAdmin(req, res, next) {
     const { type, id, email } = req.user;
     if (type !== "ADMIN") return fail(res, 403, "Invalid Admin credentials!");
-    console.log("\nValidating Admin: ", type, id, email);
+    console.log("Validating Admin: ", type, id, email);
     return next();
 }

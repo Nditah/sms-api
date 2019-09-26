@@ -105,7 +105,7 @@ var fetchRecord = exports.fetchRecord = function () {
 
 var updateRecord = exports.updateRecord = function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var data, id, _Joi$validate, error, result;
+        var data, id, _schemaUpdate$validat, error, result;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
@@ -113,7 +113,7 @@ var updateRecord = exports.updateRecord = function () {
                     case 0:
                         data = req.body;
                         id = req.params.recordId;
-                        _Joi$validate = _joi2.default.validate(data, _model.schemaUpdate), error = _Joi$validate.error;
+                        _schemaUpdate$validat = _model.schemaUpdate.validate(data), error = _schemaUpdate$validat.error;
 
                         if (!error) {
                             _context3.next = 5;
@@ -160,7 +160,7 @@ var updateRecord = exports.updateRecord = function () {
     };
 }();
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 

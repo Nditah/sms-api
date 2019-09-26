@@ -7,30 +7,31 @@
  * @property {String} resolve_status Ticket status "OPEN|CLOSED|PENDING"
  * @description Ticket records user issues to be resolved by Admin
  */
-import Joi from "joi";
+import Joi from "@hapi/joi";
 import mongoose from "mongoose";
 import { DATABASE } from "../../constants";
+// eslint-disable-next-line import/no-cycle
 import User from "../user/model";
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
-export const schemaCreate = {
+export const schemaCreate = Joi.object({
     user: Joi.string().required(),
     subject: Joi.string().required(),
     complaint: Joi.string().required(),
-    priority: Joi.string().required(),
+    priority: Joi.string().valid("LOW", "NORMAL", "HIGH").required(),
     created_by: Joi.string().required(),
-};
+});
 
-export const schemaUpdate = {
+export const schemaUpdate = Joi.object({
     user: Joi.string().optional(),
     subject: Joi.string().optional(),
     complaint: Joi.string().optional(),
-    priority: Joi.string().optional(),
+    priority: Joi.string().valid("LOW", "NORMAL", "HIGH").optional(),
     resolve_status: Joi.string().optional(),
     updated_by: Joi.string().required(),
-};
+});
 
 export const schema = {
     user: { type: ObjectId, ref: "User" },

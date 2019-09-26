@@ -58,7 +58,7 @@ var fetchRecord = exports.fetchRecord = function () {
 
 var createRecord = exports.createRecord = function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
-        var data, _Joi$validate, error, email, phone, duplicate, newRecord, result;
+        var data, _schemaCreate$validat, error, email, phone, duplicate, newRecord, result;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
             while (1) {
@@ -66,9 +66,9 @@ var createRecord = exports.createRecord = function () {
                     case 0:
                         data = req.body;
 
-                        data.api_key = (0, _helpers.genCode)(16).toLowerCase();
+                        data.api_key = (0, _helpers.genCode)(32).toLowerCase();
                         if ((0, _lib.hasProp)(data, "password")) data.password = (0, _lib.hash)(req.body.password);
-                        _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
+                        _schemaCreate$validat = _model.schemaCreate.validate(data), error = _schemaCreate$validat.error;
 
                         if (!error) {
                             _context2.next = 6;
@@ -134,7 +134,7 @@ var createRecord = exports.createRecord = function () {
 
 var updateRecord = exports.updateRecord = function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var data, id, _Joi$validate2, error, result;
+        var data, id, _schemaUpdate$validat, error, result;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
@@ -144,7 +144,7 @@ var updateRecord = exports.updateRecord = function () {
                         id = req.params.recordId;
 
                         if ((0, _lib.hasProp)(data, "password")) data.password = (0, _lib.hash)(req.body.password);
-                        _Joi$validate2 = _joi2.default.validate(data, _model.schemaUpdate), error = _Joi$validate2.error;
+                        _schemaUpdate$validat = _model.schemaUpdate.validate(data), error = _schemaUpdate$validat.error;
 
                         if (!error) {
                             _context3.next = 6;
@@ -238,14 +238,14 @@ var deleteRecord = exports.deleteRecord = function () {
 
 var login = exports.login = function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
-        var _Joi$validate3, error;
+        var _schemaLogin$validate, error;
 
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
                 switch (_context5.prev = _context5.next) {
                     case 0:
                         console.log(req.body);
-                        _Joi$validate3 = _joi2.default.validate(req.body, _model.schemaLogin), error = _Joi$validate3.error;
+                        _schemaLogin$validate = _model.schemaLogin.validate(req.body), error = _schemaLogin$validate.error;
 
                         if (!error) {
                             _context5.next = 4;
@@ -273,10 +273,6 @@ var login = exports.login = function () {
         return _ref5.apply(this, arguments);
     };
 }();
-
-var _joi = require("joi");
-
-var _joi2 = _interopRequireDefault(_joi);
 
 var _log4js = require("log4js");
 

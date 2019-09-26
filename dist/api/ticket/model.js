@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.schema = exports.schemaUpdate = exports.schemaCreate = undefined;
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 
@@ -31,23 +31,25 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @description Ticket records user issues to be resolved by Admin
  */
 var Schema = _mongoose2.default.Schema;
+// eslint-disable-next-line import/no-cycle
+
 var ObjectId = Schema.Types.ObjectId;
-var schemaCreate = exports.schemaCreate = {
+var schemaCreate = exports.schemaCreate = _joi2.default.object({
     user: _joi2.default.string().required(),
     subject: _joi2.default.string().required(),
     complaint: _joi2.default.string().required(),
-    priority: _joi2.default.string().required(),
+    priority: _joi2.default.string().valid("LOW", "NORMAL", "HIGH").required(),
     created_by: _joi2.default.string().required()
-};
+});
 
-var schemaUpdate = exports.schemaUpdate = {
+var schemaUpdate = exports.schemaUpdate = _joi2.default.object({
     user: _joi2.default.string().optional(),
     subject: _joi2.default.string().optional(),
     complaint: _joi2.default.string().optional(),
-    priority: _joi2.default.string().optional(),
+    priority: _joi2.default.string().valid("LOW", "NORMAL", "HIGH").optional(),
     resolve_status: _joi2.default.string().optional(),
     updated_by: _joi2.default.string().required()
-};
+});
 
 var schema = exports.schema = {
     user: { type: ObjectId, ref: "User" },

@@ -8,13 +8,13 @@
   "main": "dist",
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
-    "dist": "babel src -s -D -d dist",
     "start": "NODE_ENV=development nodemon --exec babel-node --presets=latest -- ./src",
     "serve": "NODE_ENV=production node ./dist",
     "mocha": "mocha --timeout 10000 --compilers js:babel-register",
     "test": "NODE_ENV=test mocha --compilers --no-deprecation js:babel-register --recursive ./test/",
     "kill": "npx kill-port 5000",
-    "doc": "rm -rf dist/public && apidoc -i src/ -o dist/public && opn dist/public/index.html"
+    "doc": "rm -rf dist/public && apidoc -i src/ -o dist/public",
+    "dist": "babel src -s -D -d dist && npm run doc"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "RestAPI"
   ],
   "dependencies": {
+    "@hapi/joi": "^16.1.4",
     "@sendgrid/mail": "^6.3.1",
     "api-query-params": "^4.9.0",
     "app-root-path": "^2.1.0",
@@ -40,7 +41,6 @@
     "express": "^4.16.3",
     "express-force-ssl": "^0.3.2",
     "helmet": "^3.13.0",
-    "joi": "^14.3.0",
     "jsonwebtoken": "^8.4.0",
     "log4js": "^3.0.6",
     "moment": "^2.24.0",

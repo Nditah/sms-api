@@ -31,7 +31,7 @@ var router = _express2.default.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/banks", [_authorization.checkAuth, _authorization.isValidAdmin], _controller.fetchRecord);
+router.get("/banks", [_authorization.checkAuth], _controller.fetchRecord);
 
 /**
  * @api {post} /api/v1/banks Create banks

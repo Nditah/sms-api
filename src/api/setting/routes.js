@@ -20,7 +20,7 @@ const router = express.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/settings/public", fetchRecordPublic);
+router.get("/settings/public", checkAuth, fetchRecordPublic);
 
 /**
  * @api {get} /api/v1/settings?id={recordId} Retrieve Settings record(s)

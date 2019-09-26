@@ -20,7 +20,7 @@ const router = express.Router();
  * @apiSuccess {Object[]} Array of Objects of records.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get("/messages", [checkAuth, isValidAdmin], fetchRecord);
+router.get("/messages", [checkAuth], fetchRecord);
 
 /**
  * @api {post} /api/v1/messages Create messages
@@ -40,7 +40,7 @@ router.get("/messages", [checkAuth, isValidAdmin], fetchRecord);
  * @apiError 404 Message not found.
  * @apiError 401 master access only.
  */
-router.post("/messages", [checkAuth, isValidAdmin], createRecord);
+router.post("/messages", [checkAuth], createRecord);
 
 /**
  * @api {delete} /api/v1/messages/{recordId} Delete messages

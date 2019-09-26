@@ -16,9 +16,10 @@ export async function fetchRecord(req, res) {
     const { query } = req;
     const { filter, skip, limit, sort, projection } = aqp(query);
     try {
+        if (req.user.type === "CUSTOMER") {
+            filter.user = req.user.id;
+        }
         const result = await User.find(filter)
-            .populate("notifications")
-            .populate("transactions")
             .skip(skip)
             .limit(limit)
             .sort(sort)

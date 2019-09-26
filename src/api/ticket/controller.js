@@ -14,8 +14,11 @@ log4js.configure({
 
 export async function fetchRecord(req, res) {
     const { query } = req;
-    const { filter, skip, limit, sort, projection } = aqp(query);
     try {
+        const { filter, skip, limit, sort, projection } = aqp(query);
+        if (req.user.type === "CUSTOMER") {
+            filter.user = req.user.id;
+        }
         const result = await Ticket.find(filter)
             .populate("user", "title surname given_name email phone credit blocked deleted")
             .skip(skip)
@@ -26,7 +29,7 @@ export async function fetchRecord(req, res) {
         if (!result) {
             return notFound(res, "Error: Bad Request: Model not found");
         }
-        logger.info("SUCCESS", []);
+        logger.info("Operation was successful", []);
         return success(res, 201, result, null);
     } catch (err) {
         logger.error(err);

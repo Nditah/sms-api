@@ -1,8 +1,7 @@
-import Joi from "joi";
 import log4js from "log4js";
 import aqp from "api-query-params";
 import User, { schemaCreate, schemaUpdate, schemaLogin } from "./model";
-import { success, fail, notFound, isObjecId, hasProp, hash } from "../../lib";
+import { success, fail, notFound, hasProp, hash } from "../../lib";
 import { userAuthenticate } from "../../services";
 import { genCode } from "../../lib/helpers";
 
@@ -39,9 +38,9 @@ export async function fetchRecord(req, res) {
 // eslint-disable-next-line complexity
 export async function createRecord(req, res) {
     const data = req.body;
-    data.api_key = genCode(16).toLowerCase();
+    data.api_key = genCode(32).toLowerCase();
     if (hasProp(data, "password")) data.password = hash(req.body.password);
-    const { error } = Joi.validate(data, schemaCreate);
+    const { error } = schemaCreate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     const { email, phone } = data;
     const duplicate = await User.findOne({ $or: [{ email }, { phone }] }).exec();
@@ -66,7 +65,7 @@ export async function updateRecord(req, res) {
     const data = req.body;
     const { recordId: id } = req.params;
     if (hasProp(data, "password")) data.password = hash(req.body.password);
-    const { error } = Joi.validate(data, schemaUpdate);
+    const { error } = schemaUpdate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     try {
         const result = await User.findOneAndUpdate({ _id: id }, data, { new: true });
@@ -96,7 +95,7 @@ export async function deleteRecord(req, res) {
 
 export async function login(req, res) {
     console.log(req.body);
-    const { error } = Joi.validate(req.body, schemaLogin);
+    const { error } = schemaLogin.validate(req.body);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     return userAuthenticate(req.body)
         .then(userToken => success(res, 201, userToken, "Login was successful!"))

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.deleteRecord = exports.createRecord = exports.fetchRecord = exports.getMessage = undefined;
+exports.deleteRecord = exports.updateRecord = exports.createRecord = exports.fetchRecord = exports.getMessage = undefined;
 
 var getMessage = exports.getMessage = function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(query) {
@@ -15,7 +15,7 @@ var getMessage = exports.getMessage = function () {
                     case 0:
                         _aqp = (0, _apiQueryParams2.default)(query), filter = _aqp.filter, skip = _aqp.skip, limit = _aqp.limit, sort = _aqp.sort, projection = _aqp.projection;
                         _context.next = 3;
-                        return _model2.default.find(filter).populate("user", "id phone email credit").populate("created_by", "id phone email credit").populate("updated_by", "id phone email credit").skip(skip).limit(limit).sort(sort).select(projection).exec();
+                        return _model2.default.find(filter).populate("created_by", "id phone email credit").populate("updated_by", "id phone email credit").populate("user", "title surname given_name email phone credit blocked deleted").skip(skip).limit(limit).sort(sort).select(projection).exec();
 
                     case 3:
                         result = _context.sent;
@@ -81,86 +81,81 @@ var fetchRecord = exports.fetchRecord = function () {
 
 var createRecord = exports.createRecord = function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var data, _Joi$validate, error, newRecord, recipient, sender, subject, body, personR, Sender, personS, send1, send2, result, newRecord2, result2;
+        var data, _schemaCreate$validat, error, myArray, newRecord, recipient, sender, subject, body, sendToSelf, sendToRecipient, result, newRecord2, result2;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
                         data = req.body;
-                        _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
+
+                        data.code = (0, _lib.genCode)(32);
+                        data.user = data.created_by;
+                        _schemaCreate$validat = _model.schemaCreate.validate(data), error = _schemaCreate$validat.error;
 
                         if (!error) {
-                            _context3.next = 4;
+                            _context3.next = 6;
                             break;
                         }
 
                         return _context3.abrupt("return", (0, _lib.fail)(res, 422, "Error validating request data. " + error.message));
 
-                    case 4:
-                        _context3.prev = 4;
+                    case 6:
+                        _context3.prev = 6;
+                        myArray = (0, _lib.stringToArrayEmail)(data.recipient) || [];
+
 
                         data.box = "INBOX";
                         newRecord = new _model2.default(data);
                         recipient = data.recipient, sender = data.sender, subject = data.subject, body = data.body;
-                        _context3.next = 10;
-                        return _model4.default.findOne({ _id: recipient }).select("email").exec();
+                        _context3.next = 13;
+                        return (0, _services.sendEmail)(sender, sender, subject, body);
 
-                    case 10:
-                        personR = _context3.sent;
-                        Sender = void 0;
-                        _context3.next = 14;
-                        return Sender.findOne({ _id: data.created_by }).select("email").exec();
+                    case 13:
+                        sendToSelf = _context3.sent;
+                        _context3.next = 16;
+                        return (0, _services.sendEmail)(recipient, sender, subject, body);
 
-                    case 14:
-                        personS = _context3.sent;
-                        _context3.next = 17;
-                        return (0, _services.sendEmail)(personR.email, personS.email, subject, body);
-
-                    case 17:
-                        send1 = _context3.sent;
-                        _context3.next = 20;
-                        return (0, _services.sendEmail)(personS.email, personS.email, subject, body);
-
-                    case 20:
-                        send2 = _context3.sent;
-                        _context3.next = 23;
+                    case 16:
+                        sendToRecipient = _context3.sent;
+                        _context3.next = 19;
                         return newRecord.save();
 
-                    case 23:
+                    case 19:
                         result = _context3.sent;
 
+                        data.box = "OUTBOX";
+                        newRecord2 = new _model2.default(data);
+                        _context3.next = 24;
+                        return newRecord2.save();
+
+                    case 24:
+                        result2 = _context3.sent;
+
                         if (result) {
-                            _context3.next = 27;
+                            _context3.next = 28;
                             break;
                         }
 
-                        logger.error("Operation failed", send1, send2, []);
+                        logger.error("Operation failed", sendToSelf, sendToRecipient, []);
                         return _context3.abrupt("return", (0, _lib.notFound)(res, "Error: Bad Request: Model not found"));
 
-                    case 27:
-                        data.box = "OUTBOX";
-                        newRecord2 = new _model2.default(data);
-                        _context3.next = 31;
-                        return newRecord2.save();
-
-                    case 31:
-                        result2 = _context3.sent;
+                    case 28:
                         return _context3.abrupt("return", (0, _lib.success)(res, 201, result2, "Record created successfully!"));
 
-                    case 35:
-                        _context3.prev = 35;
-                        _context3.t0 = _context3["catch"](4);
+                    case 31:
+                        _context3.prev = 31;
+                        _context3.t0 = _context3["catch"](6);
 
                         logger.error(_context3.t0);
                         return _context3.abrupt("return", (0, _lib.fail)(res, 500, "Error creating record. " + _context3.t0.message));
 
-                    case 39:
+                    case 35:
                     case "end":
                         return _context3.stop();
                 }
             }
-        }, _callee3, null, [[4, 35]]);
+        }, _callee3, null, [[6, 31]]);
     }));
 
     return function createRecord(_x4, _x5) {
@@ -168,54 +163,107 @@ var createRecord = exports.createRecord = function () {
     };
 }();
 
-var deleteRecord = exports.deleteRecord = function () {
+var updateRecord = exports.updateRecord = function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
-        var id, result;
+        var data, id, _schemaUpdate$validat, error, result;
+
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
                 switch (_context4.prev = _context4.next) {
                     case 0:
+                        data = req.body;
                         id = req.params.recordId;
-                        _context4.prev = 1;
-                        _context4.next = 4;
-                        return _model2.default.findOneAndRemove({ _id: id });
+                        _schemaUpdate$validat = _model.schemaUpdate.validate(data), error = _schemaUpdate$validat.error;
 
-                    case 4:
+                        if (!error) {
+                            _context4.next = 5;
+                            break;
+                        }
+
+                        return _context4.abrupt("return", (0, _lib.fail)(res, 422, "Error validating request data. " + error.message));
+
+                    case 5:
+                        _context4.prev = 5;
+                        _context4.next = 8;
+                        return _model2.default.findOneAndUpdate({ _id: id }, data, { new: true });
+
+                    case 8:
                         result = _context4.sent;
 
                         if (result) {
-                            _context4.next = 7;
+                            _context4.next = 11;
                             break;
                         }
 
                         return _context4.abrupt("return", (0, _lib.notFound)(res, "Bad Request: Model not found with id " + id));
 
-                    case 7:
-                        return _context4.abrupt("return", (0, _lib.success)(res, 200, result, "Record deleted successfully!"));
-
-                    case 10:
-                        _context4.prev = 10;
-                        _context4.t0 = _context4["catch"](1);
-
-                        logger.error(_context4.t0);
-                        return _context4.abrupt("return", (0, _lib.fail)(res, 500, "Error deleting record. " + _context4.t0.message));
+                    case 11:
+                        return _context4.abrupt("return", (0, _lib.success)(res, 200, result, "Record updated successfully!"));
 
                     case 14:
+                        _context4.prev = 14;
+                        _context4.t0 = _context4["catch"](5);
+
+                        logger.error(_context4.t0);
+                        return _context4.abrupt("return", (0, _lib.fail)(res, 500, "Error updating record. " + _context4.t0.message));
+
+                    case 18:
                     case "end":
                         return _context4.stop();
                 }
             }
-        }, _callee4, null, [[1, 10]]);
+        }, _callee4, null, [[5, 14]]);
     }));
 
-    return function deleteRecord(_x6, _x7) {
+    return function updateRecord(_x6, _x7) {
         return _ref4.apply(this, arguments);
     };
 }();
 
-var _joi = require("joi");
+var deleteRecord = exports.deleteRecord = function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
+        var id, result;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+            while (1) {
+                switch (_context5.prev = _context5.next) {
+                    case 0:
+                        id = req.params.recordId;
+                        _context5.prev = 1;
+                        _context5.next = 4;
+                        return _model2.default.findOneAndRemove({ _id: id });
 
-var _joi2 = _interopRequireDefault(_joi);
+                    case 4:
+                        result = _context5.sent;
+
+                        if (result) {
+                            _context5.next = 7;
+                            break;
+                        }
+
+                        return _context5.abrupt("return", (0, _lib.notFound)(res, "Bad Request: Model not found with id " + id));
+
+                    case 7:
+                        return _context5.abrupt("return", (0, _lib.success)(res, 200, result, "Record deleted successfully!"));
+
+                    case 10:
+                        _context5.prev = 10;
+                        _context5.t0 = _context5["catch"](1);
+
+                        logger.error(_context5.t0);
+                        return _context5.abrupt("return", (0, _lib.fail)(res, 500, "Error deleting record. " + _context5.t0.message));
+
+                    case 14:
+                    case "end":
+                        return _context5.stop();
+                }
+            }
+        }, _callee5, null, [[1, 10]]);
+    }));
+
+    return function deleteRecord(_x8, _x9) {
+        return _ref5.apply(this, arguments);
+    };
+}();
 
 var _log4js = require("log4js");
 

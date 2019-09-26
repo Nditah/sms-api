@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.schema = exports.schemaUpdate = exports.schemaCreate = exports.schemaLogin = undefined;
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 
@@ -27,11 +27,15 @@ var _model3 = require("../transaction/model");
 
 var _model4 = _interopRequireDefault(_model3);
 
+var _model5 = require("../ticket/model");
+
+var _model6 = _interopRequireDefault(_model5);
+
 var _helpers = require("../../lib/helpers");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Schema = _mongoose2.default.Schema; /* eslint-disable import/no-cycle */
+/* eslint-disable import/no-cycle */
 /**
  * @author 4Deapi_keyr
  * @property {String} id User ObjectId primaryKey
@@ -66,22 +70,22 @@ var Schema = _mongoose2.default.Schema; /* eslint-disable import/no-cycle */
  * @property {String} updated_by User record modified by
  * @description User holds record of all cities with school_list
  */
-
+var Schema = _mongoose2.default.Schema;
 var ObjectId = Schema.Types.ObjectId;
-var schemaLogin = exports.schemaLogin = {
-    email: _joi2.default.string().trim().email().optional(),
+var schemaLogin = exports.schemaLogin = _joi2.default.object({
+    email: _joi2.default.string().email().optional(),
     phone: _joi2.default.string().optional(),
     otp: _joi2.default.string().optional(),
-    password: _joi2.default.string().optional(),
-    type: _joi2.default.string().valid(["EMAIL", "PHONE", "OTP"]).optional()
-};
+    password: _joi2.default.string().optional()
+});
 
-var schemaCreate = exports.schemaCreate = {
-    type: _joi2.default.string().valid(["CUSTOMER", "ADMIN"]).optional(),
+var schemaCreate = exports.schemaCreate = _joi2.default.object({
+    type: _joi2.default.string().valid("CUSTOMER", "ADMIN").optional(),
+    api_key: _joi2.default.string().trim().min(32).optional(),
     title: _joi2.default.string().optional(),
     surname: _joi2.default.string().optional(),
     given_name: _joi2.default.string().optional(),
-    gender: _joi2.default.string().valid(["MALE", "FEMALE"]).optional(),
+    gender: _joi2.default.string().valid("MALE", "FEMALE").optional(),
     phone: _joi2.default.string().trim().optional(),
     phone_personal: _joi2.default.string().trim().optional(),
     address: _joi2.default.string().optional(),
@@ -89,16 +93,16 @@ var schemaCreate = exports.schemaCreate = {
     email: _joi2.default.string().trim().email().optional(),
     password: _joi2.default.string().trim().optional(),
     created_by: _joi2.default.string().required()
-};
+});
 
-var schemaUpdate = exports.schemaUpdate = {
-    type: _joi2.default.string().valid(["CUSTOMER", "ADMIN"]).optional(),
-    api_key: _joi2.default.string().trim().optional(),
+var schemaUpdate = exports.schemaUpdate = _joi2.default.object({
+    type: _joi2.default.string().valid("CUSTOMER", "ADMIN").optional(),
+    api_key: _joi2.default.string().trim().min(32).optional(),
     api_access: _joi2.default.boolean().optional(),
     title: _joi2.default.string().optional(),
     surname: _joi2.default.string().optional(),
     given_name: _joi2.default.string().optional(),
-    gender: _joi2.default.string().valid(["MALE", "FEMALE"]).optional(),
+    gender: _joi2.default.string().valid("MALE", "FEMALE").optional(),
     phone: _joi2.default.string().trim().optional(),
     phone_personal: _joi2.default.string().trim().optional(),
     address: _joi2.default.string().optional(),
@@ -109,7 +113,7 @@ var schemaUpdate = exports.schemaUpdate = {
     otp_count: _joi2.default.number().optional(),
     otp_access: _joi2.default.boolean().optional(),
     updated_by: _joi2.default.string().required()
-};
+});
 
 var schema = exports.schema = {
     type: {
@@ -161,6 +165,7 @@ var schema = exports.schema = {
     credit: { type: Number, default: 2.0 }, // SMS Unit
     notifications: [{ type: ObjectId, ref: "Notification" }],
     transactions: [{ type: ObjectId, ref: "Transaction" }],
+    tickets: [{ type: ObjectId, ref: "Ticket" }],
     remark: { type: String },
     deleted: { type: Boolean, default: false, required: true },
     deleted_at: { type: Date },

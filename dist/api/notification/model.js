@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.schema = exports.schemaUpdate = exports.schemaCreate = undefined;
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 
@@ -33,19 +33,19 @@ var Schema = _mongoose2.default.Schema;
 // eslint-disable-next-line import/no-cycle
 
 var ObjectId = Schema.Types.ObjectId;
-var schemaCreate = exports.schemaCreate = {
+var schemaCreate = exports.schemaCreate = _joi2.default.object({
     user: _joi2.default.string().optional(),
     message: _joi2.default.string().optional(),
     status: _joi2.default.string().valid("PENDING", "CLOSED").optional(),
     created_by: _joi2.default.string().required()
-};
+});
 
-var schemaUpdate = exports.schemaUpdate = {
+var schemaUpdate = exports.schemaUpdate = _joi2.default.object({
     user: _joi2.default.string().optional(),
     message: _joi2.default.string().optional(),
     status: _joi2.default.string().valid("PENDING", "CLOSED").optional(),
     updated_by: _joi2.default.string().required()
-};
+});
 
 var schema = exports.schema = {
     user: { type: ObjectId, ref: "User" },

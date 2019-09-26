@@ -135,7 +135,7 @@ function getToken(req) {
         email = _req$user.email;
 
     if (!(type === "CUSTOMER" || type === "ADMIN")) return (0, _response.fail)(res, 403, "Invalid User credentials!");
-    console.log("\nValidating User: ", type, id, email);
+    console.log("Validating User: ", type, id, email);
     return next();
 }
 
@@ -146,7 +146,7 @@ function isValidCustomer(req, res, next) {
         email = _req$user2.email;
 
     if (type !== "CUSTOMER") return (0, _response.fail)(res, 403, "Invalid Customer credentials!");
-    console.log("\nValidating Customer: ", type, id, email);
+    console.log("Validating Customer: ", type, id, email);
     return next();
 }
 
@@ -157,7 +157,7 @@ function isValidAdmin(req, res, next) {
         email = _req$user3.email;
 
     if (type !== "ADMIN") return (0, _response.fail)(res, 403, "Invalid Admin credentials!");
-    console.log("\nValidating Admin: ", type, id, email);
+    console.log("Validating Admin: ", type, id, email);
     return next();
 }
 //# sourceMappingURL=authorization.js.map

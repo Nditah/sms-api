@@ -27,7 +27,10 @@ router.get("/messages", [checkAuth, isValidAdmin], fetchRecord);
  * @apiName CreateMessage
  * @apiGroup Message
  * @apiHeader {String} Authorization Bearer token
- * @apiParam {ObjectId} recipient Message recipient user
+ * @apiParam {String} code Message code for querying email
+ * @apiParam {ObjectId} user Message user or creator
+ * @apiParam {String} sender Message sender email
+ * @apiParam {String} recipient Message recipient email
  * @apiParam {String} subject Message subject
  * @apiParam {String} body Message body
  * @apiParam {String} receive_status Message receive_status

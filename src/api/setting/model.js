@@ -8,7 +8,7 @@
  * @property {String} description Setting description
  * @description Setting holds record of all cities with schools
  */
-import Joi from "joi";
+import Joi from "@hapi/joi";
 import mongoose from "mongoose";
 import { DATABASE } from "../../constants";
 import table from "./table";
@@ -17,19 +17,19 @@ import User from "../user/model";
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
-export const schemaFetch = {
+export const schemaFetch = Joi.object({
     names: Joi.string().optional(),
     fields: Joi.string().optional(),
-};
+});
 
-export const schemaUpdate = {
+export const schemaUpdate = Joi.object({
     name: Joi.string().trim().optional(),
     access: Joi.string().trim().valid("public", "private").optional(),
     value: Joi.string().trim().optional(),
     category: Joi.string().optional(),
     description: Joi.string().optional(),
     updated_by: Joi.string().required(),
-};
+});
 
 export const schema = {
     name: {

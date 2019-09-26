@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.schema = exports.schemaCreate = undefined;
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 
@@ -34,7 +34,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 var Schema = _mongoose2.default.Schema;
 var ObjectId = Schema.Types.ObjectId;
-var schemaCreate = exports.schemaCreate = {
+var schemaCreate = exports.schemaCreate = _joi2.default.object({
     sid: _joi2.default.string().optional(),
     code: _joi2.default.string().optional(),
     email: _joi2.default.string().optional(),
@@ -44,10 +44,11 @@ var schemaCreate = exports.schemaCreate = {
     recipient: _joi2.default.string().required(),
     message: _joi2.default.string().required(),
     created_by: _joi2.default.string().required()
-};
+});
 
 var schema = exports.schema = {
     sid: { type: String },
+    code: { type: String, required: true, unique: true, index: true },
     sender: { type: String, required: true, default: _constants.SMS.SENDER }, // Phone
     sender_as: { type: String, default: _constants.SMS.SENDER }, // Sender's name
     recipient: { type: String, required: true }, // Phones

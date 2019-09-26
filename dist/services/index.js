@@ -39,4 +39,16 @@ Object.keys(_sms).forEach(function (key) {
     }
   });
 });
+
+var _flutterwave = require("./flutterwave");
+
+Object.keys(_flutterwave).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _flutterwave[key];
+    }
+  });
+});
 //# sourceMappingURL=index.js.map

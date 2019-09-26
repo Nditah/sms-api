@@ -33,31 +33,32 @@
  * @property {String} updated_by User record modified by
  * @description User holds record of all cities with school_list
  */
-import Joi from "joi";
+import Joi from "@hapi/joi";
 import mongoose from "mongoose";
 import { DATABASE, GENDER } from "../../constants";
 import table from "./table";
 import Notification from "../notification/model";
 import Transaction from "../transaction/model";
+import Ticket from "../ticket/model";
 import { genCode } from "../../lib/helpers";
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
-export const schemaLogin = {
-    email: Joi.string().trim().email().optional(),
+export const schemaLogin = Joi.object({
+    email: Joi.string().email().optional(),
     phone: Joi.string().optional(),
     otp: Joi.string().optional(),
     password: Joi.string().optional(),
-    type: Joi.string().valid(["EMAIL", "PHONE", "OTP"]).optional(),
-};
+});
 
-export const schemaCreate = {
-    type: Joi.string().valid(["CUSTOMER", "ADMIN"]).optional(),
+export const schemaCreate = Joi.object({
+    type: Joi.string().valid("CUSTOMER", "ADMIN").optional(),
+    api_key: Joi.string().trim().min(32).optional(),
     title: Joi.string().optional(),
     surname: Joi.string().optional(),
     given_name: Joi.string().optional(),
-    gender: Joi.string().valid(["MALE", "FEMALE"]).optional(),
+    gender: Joi.string().valid("MALE", "FEMALE").optional(),
     phone: Joi.string().trim().optional(),
     phone_personal: Joi.string().trim().optional(),
     address: Joi.string().optional(),
@@ -65,16 +66,16 @@ export const schemaCreate = {
     email: Joi.string().trim().email().optional(),
     password: Joi.string().trim().optional(),
     created_by: Joi.string().required(),
-};
+});
 
-export const schemaUpdate = {
-    type: Joi.string().valid(["CUSTOMER", "ADMIN"]).optional(),
-    api_key: Joi.string().trim().optional(),
+export const schemaUpdate = Joi.object({
+    type: Joi.string().valid("CUSTOMER", "ADMIN").optional(),
+    api_key: Joi.string().trim().min(32).optional(),
     api_access: Joi.boolean().optional(),
     title: Joi.string().optional(),
     surname: Joi.string().optional(),
     given_name: Joi.string().optional(),
-    gender: Joi.string().valid(["MALE", "FEMALE"]).optional(),
+    gender: Joi.string().valid("MALE", "FEMALE").optional(),
     phone: Joi.string().trim().optional(),
     phone_personal: Joi.string().trim().optional(),
     address: Joi.string().optional(),
@@ -85,7 +86,7 @@ export const schemaUpdate = {
     otp_count: Joi.number().optional(),
     otp_access: Joi.boolean().optional(),
     updated_by: Joi.string().required(),
-};
+});
 
 export const schema = {
     type: {
@@ -138,6 +139,7 @@ export const schema = {
     credit: { type: Number, default: 2.0 }, // SMS Unit
     notifications: [{ type: ObjectId, ref: "Notification" }],
     transactions: [{ type: ObjectId, ref: "Transaction" }],
+    tickets: [{ type: ObjectId, ref: "Ticket" }],
     remark: { type: String },
     deleted: { type: Boolean, default: false, required: true },
     deleted_at: { type: Date },

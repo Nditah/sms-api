@@ -55,14 +55,14 @@ var fetchRecord = exports.fetchRecord = function () {
 
 var createRecord = exports.createRecord = function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
-        var data, _Joi$validate, error, newRecord, result;
+        var data, _schemaCreate$validat, error, newRecord, result;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
             while (1) {
                 switch (_context2.prev = _context2.next) {
                     case 0:
                         data = req.body;
-                        _Joi$validate = _joi2.default.validate(data, _model.schemaCreate), error = _Joi$validate.error;
+                        _schemaCreate$validat = _model.schemaCreate.validate(data), error = _schemaCreate$validat.error;
 
                         if (!error) {
                             _context2.next = 4;
@@ -113,7 +113,7 @@ var createRecord = exports.createRecord = function () {
 
 var updateRecord = exports.updateRecord = function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-        var data, id, _Joi$validate2, error, result;
+        var data, id, _schemaUpdate$validat, error, result;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
@@ -121,7 +121,7 @@ var updateRecord = exports.updateRecord = function () {
                     case 0:
                         data = req.body;
                         id = req.params.recordId;
-                        _Joi$validate2 = _joi2.default.validate(data, _model.schemaUpdate), error = _Joi$validate2.error;
+                        _schemaUpdate$validat = _model.schemaUpdate.validate(data), error = _schemaUpdate$validat.error;
 
                         if (!error) {
                             _context3.next = 5;
@@ -212,10 +212,6 @@ var deleteRecord = exports.deleteRecord = function () {
         return _ref4.apply(this, arguments);
     };
 }();
-
-var _joi = require("joi");
-
-var _joi2 = _interopRequireDefault(_joi);
 
 var _log4js = require("log4js");
 

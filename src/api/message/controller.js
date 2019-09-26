@@ -1,8 +1,7 @@
-import Joi from "joi";
 import log4js from "log4js";
 import aqp from "api-query-params";
-import Message, { schemaCreate, schemaUpdated } from "./model";
-import { success, fail, notFound, isObjecId } from "../../lib";
+import Message, { schemaCreate, schemaUpdate } from "./model";
+import { success, fail, notFound, genCode, stringToArrayEmail } from "../../lib";
 import { sendEmail } from "../../services";
 import User from "../user/model";
 
@@ -16,9 +15,9 @@ log4js.configure({
 export async function getMessage(query) {
     const { filter, skip, limit, sort, projection } = aqp(query);
     const result = await Message.find(filter)
-        .populate("user", "id phone email credit")
         .populate("created_by", "id phone email credit")
         .populate("updated_by", "id phone email credit")
+        .populate("user", "title surname given_name email phone credit blocked deleted")
         .skip(skip)
         .limit(limit)
         .sort(sort)
@@ -45,30 +44,48 @@ export async function fetchRecord(req, res) {
 // eslint-disable-next-line complexity
 export async function createRecord(req, res) {
     const data = req.body;
-    const { error } = Joi.validate(data, schemaCreate);
+    data.code = genCode(32);
+    data.user = data.created_by;
+    const { error } = schemaCreate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     try {
+        const myArray = stringToArrayEmail(data.recipient) || [];
+
         data.box = "INBOX";
         const newRecord = new Message(data);
         const { recipient, sender, subject, body } = data;
-        const personR = await User.findOne({ _id: recipient }).select("email").exec();
-        let Sender;
-        const personS = await Sender.findOne({ _id: data.created_by }).select("email").exec();
-        const send1 = await sendEmail(personR.email, personS.email, subject, body);
-        const send2 = await sendEmail(personS.email, personS.email, subject, body);
-        // console.log(send);
+        const sendToSelf = await sendEmail(sender, sender, subject, body);
+        const sendToRecipient = await sendEmail(recipient, sender, subject, body);
         const result = await newRecord.save();
-        if (!result) {
-            logger.error("Operation failed", send1, send2, []);
-            return notFound(res, "Error: Bad Request: Model not found");
-        }
         data.box = "OUTBOX";
         const newRecord2 = new Message(data);
         const result2 = await newRecord2.save();
+        if (!result) {
+            logger.error("Operation failed", sendToSelf, sendToRecipient, []);
+            return notFound(res, "Error: Bad Request: Model not found");
+        }
+
         return success(res, 201, result2, "Record created successfully!");
     } catch (err) {
         logger.error(err);
         return fail(res, 500, `Error creating record. ${err.message}`);
+    }
+}
+
+export async function updateRecord(req, res) {
+    const data = req.body;
+    const { recordId: id } = req.params;
+    const { error } = schemaUpdate.validate(data);
+    if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
+    try {
+        const result = await Message.findOneAndUpdate({ _id: id }, data, { new: true });
+        if (!result) {
+            return notFound(res, `Bad Request: Model not found with id ${id}`);
+        }
+        return success(res, 200, result, "Record updated successfully!");
+    } catch (err) {
+        logger.error(err);
+        return fail(res, 500, `Error updating record. ${err.message}`);
     }
 }
 

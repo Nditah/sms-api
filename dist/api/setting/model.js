@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.schema = exports.schemaUpdate = exports.schemaFetch = undefined;
 
-var _joi = require("joi");
+var _joi = require("@hapi/joi");
 
 var _joi2 = _interopRequireDefault(_joi);
 
@@ -37,19 +37,19 @@ var Schema = _mongoose2.default.Schema; /**
                                          */
 
 var ObjectId = Schema.Types.ObjectId;
-var schemaFetch = exports.schemaFetch = {
+var schemaFetch = exports.schemaFetch = _joi2.default.object({
     names: _joi2.default.string().optional(),
     fields: _joi2.default.string().optional()
-};
+});
 
-var schemaUpdate = exports.schemaUpdate = {
+var schemaUpdate = exports.schemaUpdate = _joi2.default.object({
     name: _joi2.default.string().trim().optional(),
     access: _joi2.default.string().trim().valid("public", "private").optional(),
     value: _joi2.default.string().trim().optional(),
     category: _joi2.default.string().optional(),
     description: _joi2.default.string().optional(),
     updated_by: _joi2.default.string().required()
-};
+});
 
 var schema = exports.schema = {
     name: {

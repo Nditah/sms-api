@@ -1,8 +1,8 @@
-import Joi from "joi";
+import Joi from "@hapi/joi";
 import log4js from "log4js";
 import aqp from "api-query-params";
 import Sms, { schemaCreate } from "./model";
-import { success, fail, notFound, generateOtp, hash, stringToArrayPhone } from "../../lib";
+import { success, fail, notFound, generateOtp, hash, stringToArrayPhone, genCode } from "../../lib";
 import { receiveSms, sendSmsAsync } from "../../services";
 import User from "../user/model";
 
@@ -16,7 +16,7 @@ log4js.configure({
 export async function getSms(query) {
     const { filter, skip, limit, sort, projection } = aqp(query);
     const result = await Sms.find(filter)
-        .populate("user", "id phone email credit")
+        .populate("user", "title surname given_name email phone credit blocked deleted")
         .skip(skip)
         .limit(limit)
         .sort(sort)
@@ -78,12 +78,13 @@ export async function createRecord(req, res) {
     } else {
         data = req.query;
     }
-    const { recipient: recipientArray } = data;
+    const { recipient: recipientList } = data;
     try {
-        const { error } = Joi.validate(data, schemaCreate);
+        data.code = genCode(32);
+        const { error } = schemaCreate.validate(data);
         if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
 
-        const myArray = stringToArrayPhone(recipientArray) || [];
+        const myArray = stringToArrayPhone(recipientList) || [];
         const sendingSms = myArray.length;
         if (sendingSms > data.credit) {
             return fail(res, 422, `Error! You have ${data.credit} units left. You cannot send ${sendingSms} sms`);

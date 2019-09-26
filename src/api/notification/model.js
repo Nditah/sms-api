@@ -6,7 +6,7 @@
  * @property {String} status Notification record status "PENDING|CLOSED"
  * @description Notification model holds record of all Notification
  */
-import Joi from "joi";
+import Joi from "@hapi/joi";
 import mongoose from "mongoose";
 import { DATABASE } from "../../constants";
 // eslint-disable-next-line import/no-cycle
@@ -15,19 +15,19 @@ import User from "../user/model";
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
-export const schemaCreate = {
+export const schemaCreate = Joi.object({
     user: Joi.string().optional(),
     message: Joi.string().optional(),
     status: Joi.string().valid("PENDING", "CLOSED").optional(),
     created_by: Joi.string().required(),
-};
+});
 
-export const schemaUpdate = {
+export const schemaUpdate = Joi.object({
     user: Joi.string().optional(),
     message: Joi.string().optional(),
     status: Joi.string().valid("PENDING", "CLOSED").optional(),
     updated_by: Joi.string().required(),
-};
+});
 
 export const schema = {
     user: { type: ObjectId, ref: "User" },

@@ -164,3 +164,12 @@ export function stringToArrayPhone(str) {
     });
     return [...new Set(filtered)]; // Remove duplicates
 }
+
+export function stringToArrayEmail(str) {
+    const arr = str.split(",").map(st => st.trim()); // remove spaces
+    // eslint-disable-next-line func-names
+    const filtered = arr.filter(function(value, index, arr) {
+      return (value.length >= 9 && value.length < 100);
+    });
+    return [...new Set(filtered)]; // Remove duplicates
+}

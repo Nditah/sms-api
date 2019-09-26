@@ -25,6 +25,7 @@ exports.nextDate = nextDate;
 exports.genCode = genCode;
 exports.hasNull = hasNull;
 exports.stringToArrayPhone = stringToArrayPhone;
+exports.stringToArrayEmail = stringToArrayEmail;
 
 var _bcryptjs = require("bcryptjs");
 
@@ -223,6 +224,17 @@ function stringToArrayPhone(str) {
     // eslint-disable-next-line func-names
     var filtered = arr.filter(function (value, index, arr) {
         return value.length >= 11 && value.length < 15;
+    });
+    return [].concat(_toConsumableArray(new Set(filtered))); // Remove duplicates
+}
+
+function stringToArrayEmail(str) {
+    var arr = str.split(",").map(function (st) {
+        return st.trim();
+    }); // remove spaces
+    // eslint-disable-next-line func-names
+    var filtered = arr.filter(function (value, index, arr) {
+        return value.length >= 9 && value.length < 100;
     });
     return [].concat(_toConsumableArray(new Set(filtered))); // Remove duplicates
 }

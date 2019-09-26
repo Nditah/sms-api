@@ -1,8 +1,9 @@
-import Joi from "joi";
+import Joi from "@hapi/joi";
 import log4js from "log4js";
 import aqp from "api-query-params";
 import Ticket, { schemaCreate, schemaUpdate } from "./model";
-import { success, fail, notFound, isObjecId } from "../../lib";
+import { success, fail, notFound } from "../../lib";
+import User from "../user/model";
 
 // Logging
 const logger = log4js.getLogger("[ticket]");
@@ -16,7 +17,7 @@ export async function fetchRecord(req, res) {
     const { filter, skip, limit, sort, projection } = aqp(query);
     try {
         const result = await Ticket.find(filter)
-            .populate("user")
+            .populate("user", "title surname given_name email phone credit blocked deleted")
             .skip(skip)
             .limit(limit)
             .sort(sort)
@@ -35,7 +36,7 @@ export async function fetchRecord(req, res) {
 
 export async function createRecord(req, res) {
     const data = req.body;
-    const { error } = Joi.validate(data, schemaCreate);
+    const { error } = schemaCreate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     const newRecord = new Ticket(data);
     try {
@@ -44,6 +45,8 @@ export async function createRecord(req, res) {
             logger.info("SUCCESS", []);
             return notFound(res, "Error: Bad Request: Model not found");
         }
+        const result2 = await User.update({ _id: result.user._id },
+            { $push: { tickets: result._id } }).exec();
         return success(res, 201, result, "Record created successfully!");
     } catch (err) {
         logger.error(err);
@@ -54,7 +57,7 @@ export async function createRecord(req, res) {
 export async function updateRecord(req, res) {
     const data = req.body;
     const { recordId: id } = req.params;
-    const { error } = Joi.validate(data, schemaUpdate);
+    const { error } = schemaUpdate.validate(data);
     if (error) return fail(res, 422, `Error validating request data. ${error.message}`);
     try {
         const result = await Ticket.findOneAndUpdate({ _id: id }, data, { new: true });
@@ -75,6 +78,8 @@ export async function deleteRecord(req, res) {
         if (!result) {
             return notFound(res, `Bad Request: Model not found with id ${id}`);
         }
+        const result2 = await User.update({ _id: result.user._id },
+            { $pull: { tickets: result._id } }).exec();
         return success(res, 200, result, "Record deleted successfully!");
     } catch (err) {
         logger.error(err);

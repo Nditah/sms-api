@@ -194,7 +194,7 @@ var createRecord = exports.createRecord = function () {
                                             case 2:
                                                 send = _context3.sent;
 
-                                                logger.error(send);
+                                                console.log(send);
                                                 data.sid = send.sid;
                                                 data.recipient = phone;
                                                 newRecord = new _model2.default(data);
@@ -216,8 +216,7 @@ var createRecord = exports.createRecord = function () {
                             return function (_x7) {
                                 return _ref4.apply(this, arguments);
                             };
-                        }() // important to return the value
-                        ));
+                        }()));
 
                     case 14:
                         resolvedFinalArray = _context4.sent;

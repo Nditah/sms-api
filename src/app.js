@@ -15,7 +15,7 @@ import database from "./config";
 dotenv.config();
 const app = express();
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 const defaultPath = path.join(__dirname, "/public");
 
 app.use(helmet());

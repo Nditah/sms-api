@@ -90,12 +90,12 @@ export async function createRecord(req, res) {
         }
         const resolvedFinalArray = await Promise.all(myArray.map(async (phone) => {
             const send = await sendSmsAsync(phone, data.message);
-            logger.error(send);
+            console.log(send);
             data.sid = send.sid;
             data.recipient = phone;
             const newRecord = new Sms(data);
             const result = await newRecord.save();
-            return result; // important to return the value
+            return result;
         }));
 
         const result2 = await User.findOneAndUpdate({ _id: data.created_by },

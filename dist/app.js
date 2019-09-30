@@ -51,7 +51,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _dotenv2.default.config();
 var app = (0, _express2.default)();
 
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 8000;
 var defaultPath = _path2.default.join(__dirname, "/public");
 
 app.use((0, _helmet2.default)());

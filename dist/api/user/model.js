@@ -190,12 +190,11 @@ var User = _mongoose2.default.model("User", newSchema);
 
 User.findOne({ email: "nditah@gmail.com" }).then(function (user) {
     if (!user) {
-        console.log(_table2.default[0]);
-        var newRecord = new User(_table2.default[0]);
-        var newRecord2 = new User(_table2.default[1]);
-        newRecord.save();
-        newRecord2.save();
+        return User.insertMany(_table2.default).then(function (result) {
+            return console.log(result);
+        });
     }
+    return null;
 }).catch(function (err) {
     return console.log(__dirname, err.message);
 });

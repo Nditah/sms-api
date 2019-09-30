@@ -165,12 +165,9 @@ const User = mongoose.model("User", newSchema);
 User.findOne({ email: "nditah@gmail.com" })
     .then((user) => {
         if (!user) {
-            console.log(table[ 0 ]);
-            const newRecord = new User(table[ 0 ]);
-            const newRecord2 = new User(table[ 1 ]);
-            newRecord.save();
-            newRecord2.save();
+            return User.insertMany(table).then(result => console.log(result));
         }
+        return null;
     })
     .catch(err => console.log(__dirname, err.message));
 

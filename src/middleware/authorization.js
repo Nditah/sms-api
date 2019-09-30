@@ -24,7 +24,7 @@ export async function checkAuth(req, res, next) {
             { api_key: apiKey, api_access: true },
             { email, password, api_access: true },
         ]).exec();
-        if (!user) return fail(res, 403, "No token found in request header!");
+        if (!user) return fail(res, 403, "Token or user not found in request header!");
         req.user = {
             id: user._id,
             type: user.type,

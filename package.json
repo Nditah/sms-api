@@ -12,7 +12,7 @@
     "serve": "NODE_ENV=production node ./dist",
     "mocha": "mocha --timeout 10000 --compilers js:babel-register",
     "test": "NODE_ENV=test mocha --compilers --no-deprecation js:babel-register --recursive ./test/",
-    "kill": "npx kill-port 5000",
+    "kill": "npx kill-port 8000",
     "doc": "rm -rf dist/public && apidoc -i src/ -o dist/public",
     "dist": "babel src -s -D -d dist && npm run doc"
   },

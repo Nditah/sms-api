@@ -34,7 +34,7 @@ var checkAuth = exports.checkAuth = function () {
                             break;
                         }
 
-                        return _context.abrupt("return", (0, _response.fail)(res, 403, "No token found in request header!"));
+                        return _context.abrupt("return", (0, _response.fail)(res, 403, "Token or user not found in request header!"));
 
                     case 9:
                         req.user = {

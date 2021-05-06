@@ -55,7 +55,7 @@
     "request-promise": "^4.2.2",
     "slugify": "^1.3.4",
     "twilio": "^3.30.1",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "util": "^0.11.1"
   },
   "devDependencies": {

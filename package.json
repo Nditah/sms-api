@@ -41,7 +41,7 @@
     "express": "^4.16.3",
     "express-force-ssl": "^0.3.2",
     "helmet": "^3.13.0",
-    "jsonwebtoken": "^8.4.0",
+    "jsonwebtoken": "^9.0.0",
     "log4js": "^3.0.6",
     "moment": "^2.24.0",
     "mongoose": "^5.4.7",
